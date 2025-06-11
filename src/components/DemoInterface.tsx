@@ -19,7 +19,9 @@ import {
   Users,
   Gavel,
   Copy,
-  Check
+  Check,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 
 interface Message {
