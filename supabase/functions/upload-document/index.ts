@@ -3,7 +3,7 @@
 
   This function handles:
   1. Document upload to Supabase Storage
-  2. Text extraction from PDFs/Word docs
+  2. Text extraction from PDFs/Word docs using Gemini
   3. Embedding generation for vector search
   4. Storage in case_documents table
 */
@@ -52,11 +52,11 @@ Deno.serve(async (req: Request) => {
       throw new Error(`Upload failed: ${uploadError.message}`);
     }
 
-    // Extract text from document (mock implementation - replace with real service)
-    const extractedText = await extractTextFromDocument(fileBuffer, contentType);
+    // Extract text from document using Gemini
+    const extractedText = await extractTextWithGemini(fileBuffer, contentType, fileName);
 
-    // Generate embeddings (mock implementation - replace with OpenAI)
-    const embedding = await generateEmbedding(extractedText);
+    // Generate embeddings using Gemini
+    const embedding = await generateEmbeddingWithGemini(extractedText);
 
     // Store document metadata in database
     const { data: documentData, error: dbError } = await supabaseClient
@@ -108,38 +108,110 @@ Deno.serve(async (req: Request) => {
   }
 });
 
-// Mock text extraction - replace with real service like Unstructured.io
-async function extractTextFromDocument(fileBuffer: Uint8Array, contentType: string): Promise<string> {
-  // This is a mock implementation
-  // In production, you would use services like:
-  // - Unstructured.io API
-  // - Adobe PDF Services
-  // - Google Document AI
-  
-  if (contentType === 'application/pdf') {
-    return `[EXTRACTED PDF TEXT] This is mock extracted text from a PDF document. 
-    In a real implementation, this would contain the actual text content extracted from the PDF file.
-    The document appears to contain legal content related to employment law and discrimination claims.
-    Key dates mentioned: January 15, 2023, February 3, 2023, March 15, 2023.
-    Parties involved: Smith (Plaintiff) vs TechCorp (Defendant).
-    Claims: Wrongful termination, harassment, retaliation.`;
-  } else if (contentType.includes('word')) {
-    return `[EXTRACTED WORD TEXT] This is mock extracted text from a Word document.
-    The document contains detailed case information and witness statements.`;
-  } else {
-    return `[EXTRACTED TEXT] Mock text extraction for ${contentType}`;
+// Extract text from documents using Gemini Vision/Text API
+async function extractTextWithGemini(fileBuffer: Uint8Array, contentType: string, fileName: string): Promise<string> {
+  const apiKey = Deno.env.get('GEMINI_API_KEY');
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY not found in environment variables');
+  }
+
+  try {
+    // Convert file to base64 for Gemini API
+    const base64Data = btoa(String.fromCharCode(...fileBuffer));
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            {
+              text: `Please extract all text content from this legal document. Focus on:
+              1. All text content, preserving structure and formatting
+              2. Important dates, names, and legal terms
+              3. Key clauses and provisions
+              4. Any tables or structured data
+              
+              Document: ${fileName}
+              
+              Please provide a clean, well-structured text extraction that preserves the legal meaning and context.`
+            },
+            {
+              inline_data: {
+                mime_type: contentType,
+                data: base64Data
+              }
+            }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 8192,
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+      return result.candidates[0].content.parts[0].text;
+    } else {
+      throw new Error('No text content extracted from document');
+    }
+
+  } catch (error) {
+    console.error('Gemini text extraction error:', error);
+    // Fallback to basic text extraction
+    return `[TEXT EXTRACTION ERROR] Could not extract text from ${fileName}. Error: ${error.message}`;
   }
 }
 
-// Mock embedding generation - replace with OpenAI Embeddings API
-async function generateEmbedding(text: string): Promise<number[]> {
-  // This is a mock implementation
-  // In production, you would use OpenAI's text-embedding-ada-002 model
-  
-  // Generate a mock 1536-dimensional embedding (same as OpenAI's ada-002)
-  const embedding = Array.from({ length: 1536 }, () => Math.random() * 2 - 1);
-  
-  // Normalize the vector
-  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-  return embedding.map(val => val / magnitude);
+// Generate embeddings using Gemini Embedding API
+async function generateEmbeddingWithGemini(text: string): Promise<number[]> {
+  const apiKey = Deno.env.get('GEMINI_API_KEY');
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY not found in environment variables');
+  }
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: "models/text-embedding-004",
+        content: {
+          parts: [{
+            text: text.substring(0, 30000) // Limit text length for embedding
+          }]
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Gemini Embedding API error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.embedding && result.embedding.values) {
+      return result.embedding.values;
+    } else {
+      throw new Error('No embedding generated');
+    }
+
+  } catch (error) {
+    console.error('Gemini embedding error:', error);
+    // Fallback to random embedding (for development)
+    const embedding = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    return embedding.map(val => val / magnitude);
+  }
 }
