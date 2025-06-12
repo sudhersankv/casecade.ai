@@ -12,6 +12,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Scroll to top when location changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
