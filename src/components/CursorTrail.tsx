@@ -21,35 +21,45 @@ const CursorTrail: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Function to check if cursor is over an interactive element
-    const isOverInteractiveElement = (x: number, y: number): boolean => {
+    // Function to check if cursor is over any visible element (including text)
+    const isOverAnyElement = (x: number, y: number): boolean => {
       const elements = document.elementsFromPoint(x, y);
       return elements.some(el => {
-        const tagName = el.tagName.toLowerCase();
-        const hasInteractiveClass = el.classList.contains('group') || 
-                                   el.classList.contains('hover:') ||
-                                   el.closest('button') ||
-                                   el.closest('a') ||
-                                   el.closest('input') ||
-                                   el.closest('textarea') ||
-                                   el.closest('[role="button"]');
-        
-        return tagName === 'button' || 
-               tagName === 'a' || 
-               tagName === 'input' || 
-               tagName === 'textarea' ||
-               tagName === 'select' ||
-               hasInteractiveClass ||
-               el.getAttribute('role') === 'button' ||
-               window.getComputedStyle(el).cursor === 'pointer';
+        // Skip the canvas itself and body/html
+        if (el.tagName.toLowerCase() === 'canvas' || 
+            el.tagName.toLowerCase() === 'body' || 
+            el.tagName.toLowerCase() === 'html') {
+          return false;
+        }
+
+        // Check for any element with content
+        const hasContent = el.textContent && el.textContent.trim().length > 0;
+        const hasBackground = window.getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)';
+        const hasBorder = window.getComputedStyle(el).borderWidth !== '0px';
+        const isInteractive = el.tagName.toLowerCase() === 'button' || 
+                             el.tagName.toLowerCase() === 'a' || 
+                             el.tagName.toLowerCase() === 'input' || 
+                             el.tagName.toLowerCase() === 'textarea' ||
+                             el.tagName.toLowerCase() === 'select' ||
+                             el.classList.contains('group') || 
+                             el.closest('button') ||
+                             el.closest('a') ||
+                             el.closest('input') ||
+                             el.closest('textarea') ||
+                             el.closest('[role="button"]') ||
+                             el.getAttribute('role') === 'button' ||
+                             window.getComputedStyle(el).cursor === 'pointer';
+
+        // Eclipse if element has text content, background, border, or is interactive
+        return hasContent || hasBackground || hasBorder || isInteractive;
       });
     };
 
     const handleMouseMove = (e: MouseEvent) => {
       mousePosition.current = { x: e.clientX, y: e.clientY };
       
-      // Check if cursor is over an interactive element
-      const isOverElement = isOverInteractiveElement(e.clientX, e.clientY);
+      // Check if cursor is over any element
+      const isOverElement = isOverAnyElement(e.clientX, e.clientY);
       
       trailPoints.current.push({
         x: e.clientX,
@@ -68,7 +78,7 @@ const CursorTrail: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Check current mouse position for eclipse effect
-      const currentlyOverElement = isOverInteractiveElement(
+      const currentlyOverElement = isOverAnyElement(
         mousePosition.current.x, 
         mousePosition.current.y
       );
@@ -81,8 +91,8 @@ const CursorTrail: React.FC = () => {
           const baseOpacity = (20 - point.age) / 20;
           const size = 8 - (point.age * 0.3);
           
-          // Apply eclipse effect - reduce opacity when over elements
-          const eclipseMultiplier = (point.isEclipsed || currentlyOverElement) ? 0.2 : 1;
+          // Apply eclipse effect - reduce opacity when over any elements
+          const eclipseMultiplier = (point.isEclipsed || currentlyOverElement) ? 0.15 : 1;
           const opacity = baseOpacity * eclipseMultiplier;
           
           // Draw main glowing circle with eclipse effect
