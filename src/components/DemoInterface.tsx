@@ -70,16 +70,19 @@ You can interact with me by:
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (shouldAutoScroll) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, shouldAutoScroll]);
 
   const getIntelligentResponse = (userMessage: string): string => {
     const message = userMessage.toLowerCase();
@@ -358,6 +361,7 @@ I've completed a **comprehensive analysis** using advanced temporal reasoning an
     };
 
     setMessages(prev => [...prev, newMessage]);
+    setShouldAutoScroll(true); // Enable auto-scroll for new messages
     const currentMessage = inputMessage;
     setInputMessage('');
     setIsTyping(true);
@@ -390,6 +394,7 @@ I've completed a **comprehensive analysis** using advanced temporal reasoning an
         attachments: fileNames
       };
       setMessages(prev => [...prev, message]);
+      setShouldAutoScroll(true); // Enable auto-scroll for new messages
       
       // Reset file input
       if (fileInputRef.current) {
