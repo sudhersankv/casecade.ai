@@ -32,6 +32,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     let mouseX = 0;
     let mouseY = 0;
 
+    // Function to check if cursor is over an interactive element
+    const isOverInteractiveElement = (x: number, y: number): boolean => {
+      const elements = document.elementsFromPoint(x, y);
+      return elements.some(el => {
+        const tagName = el.tagName.toLowerCase();
+        const hasInteractiveClass = el.classList.contains('group') || 
+                                   el.classList.contains('hover:') ||
+                                   el.closest('button') ||
+                                   el.closest('a') ||
+                                   el.closest('input') ||
+                                   el.closest('textarea') ||
+                                   el.closest('[role="button"]');
+        
+        return tagName === 'button' || 
+               tagName === 'a' || 
+               tagName === 'input' || 
+               tagName === 'textarea' ||
+               tagName === 'select' ||
+               hasInteractiveClass ||
+               el.getAttribute('role') === 'button' ||
+               window.getComputedStyle(el).cursor === 'pointer';
+      });
+    };
+
     const drawGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -53,16 +77,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         ctx.stroke();
       }
 
-      // Draw interactive grid around cursor
+      // Check if cursor is over an interactive element for eclipse effect
+      const isOverElement = isOverInteractiveElement(mouseX, mouseY);
+
+      // Draw interactive grid around cursor with eclipse effect
       const radius = 150;
       for (let x = 0; x <= canvas.width; x += gridSize) {
         for (let y = 0; y <= canvas.height; y += gridSize) {
           const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
           if (distance < radius) {
-            const opacity = (1 - distance / radius) * 0.4;
+            const baseOpacity = (1 - distance / radius) * 0.4;
+            
+            // Apply eclipse effect - reduce opacity when over elements
+            const eclipseMultiplier = isOverElement ? 0.15 : 1;
+            const opacity = baseOpacity * eclipseMultiplier;
+            
             ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
             ctx.lineWidth = 2;
             ctx.strokeRect(x - gridSize/2, y - gridSize/2, gridSize, gridSize);
+            
+            // Add subtle shadow effect when eclipsed
+            if (isOverElement && distance < radius * 0.6) {
+              ctx.strokeStyle = `rgba(0, 0, 0, ${baseOpacity * 0.1})`;
+              ctx.lineWidth = 1;
+              ctx.strokeRect(x - gridSize/2 + 1, y - gridSize/2 + 1, gridSize, gridSize);
+            }
           }
         }
       }
