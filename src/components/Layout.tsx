@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Scale, Menu, X } from 'lucide-react';
+import { Scale, Menu, X, User, LogOut } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
 import CursorTrail from './CursorTrail';
+import AuthModal from './AuthModal';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,8 +18,46 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayChildren, setDisplayChildren] = useState(children);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    };
+
+    getSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null);
+        setIsLoading(false);
+        
+        if (event === 'SIGNED_IN') {
+          setIsAuthModalOpen(false);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const openAuthModal = (mode: 'login' | 'signup') => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
 
   // Handle page transitions
   useEffect(() => {
@@ -219,12 +264,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300">
-                Login
-              </button>
-              <button className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300">
-                Sign Up
-              </button>
+              {isLoading ? (
+                <div className="w-20 h-10 bg-white/10 rounded-lg animate-pulse"></div>
+              ) : user ? (
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 text-white">
+                    <User className="h-4 w-4" />
+                    <span className="text-sm">{user.email}</span>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="p-2 text-gray-400 hover:text-white transition-colors"
+                    title="Sign out"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => openAuthModal('login')}
+                    className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => openAuthModal('signup')}
+                    className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -254,12 +325,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Link>
               ))}
               <div className="pt-4 space-y-2">
-                <button className="w-full px-4 py-2 text-white border border-white/20 rounded-lg">
-                  Login
-                </button>
-                <button className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium">
-                  Sign Up
-                </button>
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="text-white text-sm">{user.email}</div>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full px-4 py-2 text-white border border-white/20 rounded-lg"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => openAuthModal('login')}
+                      className="w-full px-4 py-2 text-white border border-white/20 rounded-lg"
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => openAuthModal('signup')}
+                      className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium"
+                    >
+                      Sign Up
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -324,6 +415,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        mode={authMode}
+        onModeChange={setAuthMode}
+      />
     </div>
   );
 };
