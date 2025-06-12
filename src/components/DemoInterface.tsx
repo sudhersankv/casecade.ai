@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { 
   Send, 
   Upload, 
@@ -38,28 +36,28 @@ const DemoInterface: React.FC = () => {
     {
       id: '1',
       type: 'assistant',
-      content: `# Welcome to LegalMind AI! 🏛️
+      content: `Welcome to LegalMind AI! 🏛️
 
-I'm your **AI Legal Assistant** powered by advanced temporal reasoning and comprehensive case analysis. Here's how I can help:
+I'm your AI Legal Assistant powered by advanced temporal reasoning and comprehensive case analysis. Here's how I can help:
 
-## 🔍 **Core Capabilities**
+## Core Capabilities
 - **Case Analysis**: Deep dive into legal strengths, weaknesses, and strategic opportunities
 - **Timeline Generation**: Create detailed chronological case timelines automatically  
 - **Precedent Discovery**: Search 2.3M+ legal cases for relevant precedents
 - **Document Analysis**: Extract key information from legal documents
 - **Strategic Insights**: AI-powered recommendations based on similar cases
 
-## 📁 **Getting Started**
+## Getting Started
 You can interact with me by:
 - **Typing** your case details or legal questions
 - **Uploading** documents (PDF, Word, text files)
 - **Recording** voice notes for hands-free input
 
-## 💡 **Try These Examples**
-- *"Analyze an employment discrimination case"*
-- *"Find precedents for wrongful termination"*
-- *"Create a timeline for my personal injury case"*
-- *"What are the key elements of a contract dispute?"*
+## Try These Examples
+- "Analyze an employment discrimination case"
+- "Find precedents for wrongful termination"
+- "Create a timeline for my personal injury case"
+- "What are the key elements of a contract dispute?"
 
 **How can I assist you with your legal work today?**`,
       timestamp: new Date()
@@ -91,28 +89,28 @@ You can interact with me by:
     if (message.includes('employment') || message.includes('discrimination') || message.includes('workplace') || message.includes('wrongful termination')) {
       return `# Employment Law Analysis ⚖️
 
-## 🔍 **Case Assessment Complete**
+## Case Assessment Complete
 I've analyzed your employment matter using our comprehensive legal database:
 
-### **📊 Key Findings**
+### Key Findings
 - **Case Type**: Employment Discrimination/Wrongful Termination
 - **Jurisdiction**: Federal and State Law Application
 - **Statute of Limitations**: Typically 180-300 days for EEOC filing
 - **Success Rate**: 68% for similar cases with proper documentation
 
-### **🎯 Critical Elements to Establish**
+### Critical Elements to Establish
 1. **Protected Class Status**: Age, race, gender, disability, religion, etc.
 2. **Adverse Employment Action**: Termination, demotion, harassment
 3. **Causal Connection**: Temporal proximity between complaint and action
 4. **Pretext Analysis**: Employer's stated reasons vs. actual motivation
 
-### **📈 Precedent Analysis**
+### Precedent Analysis
 Recent similar cases show:
 - **Average Settlement**: $85K - $250K range
 - **Timeline**: 12-18 months to resolution
 - **Key Success Factors**: Documentation, witness testimony, pattern evidence
 
-### **🚀 Recommended Next Steps**
+### Recommended Next Steps
 1. **Document Preservation**: Secure all emails, performance reviews, communications
 2. **EEOC Filing**: File charge within statutory deadline
 3. **Witness Identification**: Colleagues who observed discriminatory conduct
@@ -125,22 +123,22 @@ Recent similar cases show:
     if (message.includes('personal injury') || message.includes('accident') || message.includes('injury') || message.includes('negligence')) {
       return `# Personal Injury Case Analysis 🏥
 
-## 🔍 **Comprehensive Case Review**
+## Comprehensive Case Review
 I've analyzed your personal injury matter with advanced AI assessment:
 
-### **⚖️ Liability Analysis**
+### Liability Analysis
 - **Duty of Care**: Establishing defendant's legal obligation
 - **Breach of Duty**: How defendant failed to meet standard of care
 - **Causation**: Direct link between breach and your injuries
 - **Damages**: Quantifiable harm and losses
 
-### **📊 Case Strength Indicators**
+### Case Strength Indicators
 - **Medical Documentation**: Quality and completeness of treatment records
 - **Witness Testimony**: Independent verification of incident
 - **Expert Opinions**: Medical and accident reconstruction specialists
 - **Comparative Fault**: Your percentage of responsibility (if any)
 
-### **💰 Damages Assessment**
+### Damages Assessment
 **Economic Damages:**
 - Medical expenses (past and future)
 - Lost wages and earning capacity
@@ -153,7 +151,7 @@ I've analyzed your personal injury matter with advanced AI assessment:
 - Loss of enjoyment of life
 - Permanent disability/disfigurement
 
-### **📈 Settlement Projections**
+### Settlement Projections
 Based on similar cases:
 - **Mild Injuries**: $15K - $50K range
 - **Moderate Injuries**: $50K - $150K range  
@@ -167,22 +165,22 @@ Based on similar cases:
     if (message.includes('contract') || message.includes('breach') || message.includes('agreement') || message.includes('dispute')) {
       return `# Contract Dispute Analysis 📋
 
-## 🔍 **Contract Analysis Complete**
+## Contract Analysis Complete
 I've reviewed your contract dispute using advanced legal reasoning:
 
-### **📄 Essential Contract Elements**
+### Essential Contract Elements
 1. **Offer & Acceptance**: Clear terms and mutual agreement
 2. **Consideration**: Exchange of value between parties
 3. **Capacity**: Legal ability to enter contract
 4. **Legality**: Lawful purpose and terms
 
-### **⚠️ Breach Analysis Framework**
+### Breach Analysis Framework
 - **Material vs. Minor Breach**: Severity and impact assessment
 - **Anticipatory Breach**: Early indication of non-performance
 - **Substantial Performance**: Degree of completion achieved
 - **Excuse for Non-Performance**: Force majeure, impossibility, frustration
 
-### **💼 Remedies Available**
+### Remedies Available
 **Monetary Damages:**
 - **Expectation Damages**: Benefit of the bargain
 - **Reliance Damages**: Out-of-pocket expenses
@@ -195,7 +193,7 @@ I've reviewed your contract dispute using advanced legal reasoning:
 - **Rescission**: Cancel contract and restore status quo
 - **Reformation**: Correct contract terms
 
-### **📊 Success Probability**
+### Success Probability
 Contract cases with similar fact patterns:
 - **Clear Breach**: 85% success rate
 - **Disputed Terms**: 60% success rate
@@ -209,24 +207,24 @@ Contract cases with similar fact patterns:
     if (message.includes('timeline') || message.includes('chronology') || message.includes('sequence') || message.includes('dates')) {
       return `# Case Timeline Analysis 📅
 
-## 🕐 **Chronological Analysis Complete**
+## Chronological Analysis Complete
 I've generated a comprehensive timeline framework for your case:
 
-### **⏰ Critical Timeline Components**
+### Critical Timeline Components
 1. **Incident Date**: Primary event triggering legal action
 2. **Notice Periods**: When parties became aware of issues
 3. **Statute of Limitations**: Filing deadlines and time constraints
 4. **Discovery Cutoffs**: Evidence gathering deadlines
 5. **Settlement Windows**: Optimal negotiation periods
 
-### **📊 Timeline Pattern Analysis**
+### Timeline Pattern Analysis
 **Temporal Proximity Factors:**
 - Events occurring within 30 days: High causation inference
 - Events within 90 days: Moderate causation inference  
 - Events beyond 180 days: Requires additional evidence
 - Pattern recognition: Recurring behaviors or incidents
 
-### **🎯 Strategic Timeline Insights**
+### Strategic Timeline Insights
 **Strength Indicators:**
 - ✅ **Immediate Documentation**: Real-time evidence creation
 - ✅ **Witness Availability**: Contemporaneous observations
@@ -239,7 +237,7 @@ I've generated a comprehensive timeline framework for your case:
 - ⚠️ **Intervening Causes**: Alternative explanations for events
 - ⚠️ **Statute Issues**: Time limitation concerns
 
-### **📋 Timeline Development Process**
+### Timeline Development Process
 1. **Event Mapping**: Chronological incident placement
 2. **Evidence Correlation**: Document-to-event matching
 3. **Witness Integration**: Testimony timeline alignment
@@ -253,16 +251,16 @@ I've generated a comprehensive timeline framework for your case:
     if (message.includes('precedent') || message.includes('similar case') || message.includes('case law') || message.includes('find cases')) {
       return `# Precedent Research Results 📚
 
-## 🔍 **Legal Database Search Complete**
+## Legal Database Search Complete
 I've searched our comprehensive case database for relevant precedents:
 
-### **🎯 Search Methodology**
+### Search Methodology
 - **Keyword Analysis**: Legal terms and fact pattern matching
 - **Jurisdiction Filtering**: Relevant court systems and levels
 - **Temporal Relevance**: Recent decisions and current law
 - **Similarity Scoring**: AI-powered case comparison algorithms
 
-### **📊 Top Precedent Matches**
+### Top Precedent Matches
 **Highly Relevant Cases (90%+ similarity):**
 - **Johnson v. MegaCorp Industries** (2023) - $285K verdict
   - Similar fact pattern, identical legal theory
@@ -279,14 +277,14 @@ I've searched our comprehensive case database for relevant precedents:
   - Circuit court of appeals, controlling authority
   - Key holding: Pattern evidence supports discrimination claim
 
-### **📈 Statistical Analysis**
+### Statistical Analysis
 **Success Rate Patterns:**
 - Cases with similar facts: **78% plaintiff success rate**
 - Average damage awards: **$185K median, $275K mean**
 - Settlement rate: **65% resolve before trial**
 - Timeline: **14 months average resolution**
 
-### **🎯 Strategic Applications**
+### Strategic Applications
 **Favorable Precedents Support:**
 - Legal theory validation and case strength
 - Damages calculation benchmarks and ranges
@@ -305,22 +303,22 @@ I've searched our comprehensive case database for relevant precedents:
     // Default comprehensive response
     return `# Comprehensive Legal Analysis 🏛️
 
-## 📊 **AI-Powered Case Assessment**
-I've completed a **comprehensive analysis** using advanced temporal reasoning and precedent matching:
+## AI-Powered Case Assessment
+I've completed a comprehensive analysis using advanced temporal reasoning and precedent matching:
 
-### **🔍 Case Strengths Identified:**
+### Case Strengths Identified:
 - ✅ **Strong Legal Foundation**: Clear statutory/common law basis
 - ✅ **Compelling Facts**: Well-documented incident patterns  
 - ✅ **Favorable Precedents**: 78% success rate in similar cases
 - ✅ **Temporal Evidence**: Clear causation timeline
 
-### **⚠️ Potential Challenges:**
+### Potential Challenges:
 - 🔸 **Procedural Hurdles**: Statute of limitations considerations
 - 🔸 **Evidence Gaps**: Additional documentation needed
 - 🔸 **Defense Arguments**: Anticipated counterstrategies
 - 🔸 **Jurisdictional Issues**: Venue and forum considerations
 
-## 🎯 **Strategic Action Plan**
+## Strategic Action Plan
 1. **Immediate Actions** (0-30 days)
    - Document preservation and collection
    - Witness identification and interviews
@@ -341,7 +339,7 @@ I've completed a **comprehensive analysis** using advanced temporal reasoning an
    - Settlement negotiations and mediation
    - Trial strategy and presentation
 
-## 💰 **Outcome Projections**
+## Outcome Projections
 - **Success Probability**: 78% based on precedent analysis
 - **Estimated Damages**: $200K - $350K range
 - **Timeline**: 18-24 months to resolution
@@ -409,25 +407,25 @@ I've completed a **comprehensive analysis** using advanced temporal reasoning an
           type: 'assistant',
           content: `# Document Processing Complete ✅
 
-## 📄 **Files Received & Analyzed**
+## Files Received & Analyzed
 ${fileNames.map(name => `- **${name}** - Processing complete`).join('\n')}
 
-## 🔍 **Analysis Capabilities**
+## Analysis Capabilities
 I can now help you with:
 
-### **📋 Document Analysis**
+### Document Analysis
 - **Key Information Extraction**: Dates, parties, terms, conditions
 - **Legal Issue Identification**: Claims, defenses, procedural matters
 - **Timeline Integration**: Incorporate document dates into case chronology
 - **Precedent Cross-Reference**: Match document content with similar cases
 
-### **🎯 Strategic Insights**
+### Strategic Insights
 - **Evidence Strength Assessment**: Document quality and relevance
 - **Discovery Opportunities**: Additional documents to request
 - **Expert Witness Needs**: Technical or industry expertise requirements
 - **Settlement Leverage**: How documents impact negotiation position
 
-## 🚀 **Next Steps**
+## Next Steps
 Would you like me to:
 1. **Extract key information** from the uploaded documents?
 2. **Generate a timeline** incorporating document dates?
@@ -467,71 +465,19 @@ Would you like me to:
     "Review intellectual property case"
   ];
 
-  // Custom markdown components for better styling
-  const markdownComponents = {
-    h1: ({ children }: any) => (
-      <h1 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
-        <Scale className="h-6 w-6" />
-        <span>{children}</span>
-      </h1>
-    ),
-    h2: ({ children }: any) => (
-      <h2 className="text-xl font-semibold text-white mb-3 mt-6 flex items-center space-x-2">
-        <div className="w-2 h-2 bg-white rounded-full"></div>
-        <span>{children}</span>
-      </h2>
-    ),
-    h3: ({ children }: any) => (
-      <h3 className="text-lg font-semibold text-gray-200 mb-2 mt-4">{children}</h3>
-    ),
-    p: ({ children }: any) => (
-      <p className="text-gray-300 mb-3 leading-relaxed">{children}</p>
-    ),
-    ul: ({ children }: any) => (
-      <ul className="space-y-2 mb-4">{children}</ul>
-    ),
-    ol: ({ children }: any) => (
-      <ol className="space-y-2 mb-4 list-decimal list-inside">{children}</ol>
-    ),
-    li: ({ children }: any) => (
-      <li className="text-gray-300 flex items-start space-x-2">
-        <span className="text-white">•</span>
-        <span>{children}</span>
-      </li>
-    ),
-    strong: ({ children }: any) => (
-      <strong className="text-white font-semibold">{children}</strong>
-    ),
-    em: ({ children }: any) => (
-      <em className="text-gray-200 italic">{children}</em>
-    ),
-    code: ({ children }: any) => (
-      <code className="bg-white/10 px-2 py-1 rounded text-gray-200 font-mono text-sm">
-        {children}
-      </code>
-    ),
-    blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-white/20 pl-4 my-4 text-gray-300 italic">
-        {children}
-      </blockquote>
-    ),
-    table: ({ children }: any) => (
-      <div className="overflow-x-auto mb-4">
-        <table className="min-w-full border border-white/20 rounded-lg">
-          {children}
-        </table>
-      </div>
-    ),
-    th: ({ children }: any) => (
-      <th className="border border-white/20 px-4 py-2 bg-white/10 text-white font-semibold text-left">
-        {children}
-      </th>
-    ),
-    td: ({ children }: any) => (
-      <td className="border border-white/20 px-4 py-2 text-gray-300">
-        {children}
-      </td>
-    )
+  const formatContent = (content: string) => {
+    // Simple markdown-like formatting
+    return content
+      .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold text-white mb-4 flex items-center space-x-2"><span>$1</span></h1>')
+      .replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold text-white mb-3 mt-6">$1</h2>')
+      .replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold text-gray-200 mb-2 mt-4">$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em class="text-gray-200 italic">$1</em>')
+      .replace(/^- (.+)$/gm, '<li class="text-gray-300 flex items-start space-x-2"><span class="text-white">•</span><span>$1</span></li>')
+      .replace(/^\d+\. (.+)$/gm, '<li class="text-gray-300 mb-2">$1</li>')
+      .replace(/\n\n/g, '</p><p class="text-gray-300 mb-3 leading-relaxed">')
+      .replace(/^(?!<[h|l])/gm, '<p class="text-gray-300 mb-3 leading-relaxed">')
+      .replace(/$(?!<\/[h|l])/gm, '</p>');
   };
 
   return (
@@ -592,23 +538,14 @@ Would you like me to:
                     </button>
                   )}
 
-                  {message.type === 'assistant' ? (
-                    <div className="prose prose-invert max-w-none">
-                      <ReactMarkdown 
-                        remarkPlugins={[remarkGfm]}
-                        components={markdownComponents}
-                      >
-                        {message.content}
-                      </ReactMarkdown>
-                    </div>
-                  ) : (
-                    <ReactMarkdown 
-                      remarkPlugins={[remarkGfm]}
-                      className="prose prose-slate max-w-none"
-                    >
-                      {message.content}
-                    </ReactMarkdown>
-                  )}
+                  <div 
+                    className="prose prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ 
+                      __html: message.type === 'assistant' 
+                        ? formatContent(message.content)
+                        : message.content.replace(/\n/g, '<br>')
+                    }}
+                  />
                   
                   {message.attachments && (
                     <div className="mt-4 space-y-2">
