@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 const CursorTrail: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const trailPoints = useRef<Array<{ x: number; y: number; age: number }>>([]);
+  const trailPoints = useRef<Array<{ x: number; y: number; age: number; isEclipsed?: boolean }>>([]);
   const animationRef = useRef<number>();
   const mousePosition = useRef({ x: 0, y: 0 });
 
@@ -66,7 +66,7 @@ const CursorTrail: React.FC = () => {
         y: e.clientY,
         age: 0,
         isEclipsed: isOverElement
-      } as any);
+      });
 
       // Limit trail length
       if (trailPoints.current.length > 20) {
@@ -84,7 +84,7 @@ const CursorTrail: React.FC = () => {
       );
 
       // Update and draw trail points
-      trailPoints.current = trailPoints.current.filter((point: any) => {
+      trailPoints.current = trailPoints.current.filter((point) => {
         point.age += 1;
         
         if (point.age < 20) {

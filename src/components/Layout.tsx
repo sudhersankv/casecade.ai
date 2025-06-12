@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Scale, Menu, X } from 'lucide-react';
 import CursorTrail from './CursorTrail';
-import AuthModal from './auth/AuthModal';
-import UserMenu from './auth/UserMenu';
-import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,25 +11,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayChildren, setDisplayChildren] = useState(children);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<'signin' | 'signup'>('signin');
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { user, loading } = useAuth();
-
-  // Handle auth modal from URL params
-  useEffect(() => {
-    const authParam = searchParams.get('auth');
-    if (authParam === 'signin' || authParam === 'signup') {
-      setAuthModalMode(authParam);
-      setAuthModalOpen(true);
-      // Remove auth param from URL
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.delete('auth');
-      setSearchParams(newSearchParams, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
 
   // Handle page transitions
   useEffect(() => {
@@ -195,12 +175,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  // Add dashboard to navigation for authenticated users
-  const userNavigation = user ? [
-    { name: 'Dashboard', href: '/dashboard' },
-    ...navigation.filter(item => item.name !== 'Home')
-  ] : navigation;
-
   return (
     <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
       {/* Animated Grid Background */}
@@ -216,7 +190,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to={user ? "/dashboard" : "/"} className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               <div className="bg-white p-2 rounded-lg">
                 <Scale className="h-8 w-8 text-black" />
               </div>
@@ -228,7 +202,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              {userNavigation.map((item) => (
+              {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -243,34 +217,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               ))}
             </nav>
 
-            {/* Auth Buttons / User Menu */}
+            {/* Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              {loading ? (
-                <div className="w-8 h-8 bg-white/10 rounded-lg animate-pulse"></div>
-              ) : user ? (
-                <UserMenu />
-              ) : (
-                <>
-                  <button 
-                    onClick={() => {
-                      setAuthModalMode('signin');
-                      setAuthModalOpen(true);
-                    }}
-                    className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300"
-                  >
-                    Login
-                  </button>
-                  <button 
-                    onClick={() => {
-                      setAuthModalMode('signup');
-                      setAuthModalOpen(true);
-                    }}
-                    className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300"
-                  >
-                    Sign Up
-                  </button>
-                </>
-              )}
+              <button className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300">
+                Login
+              </button>
+              <button className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300">
+                Sign Up
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -287,7 +241,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {isMenuOpen && (
           <div className="md:hidden bg-black/95 backdrop-blur-sm border-t border-white/10">
             <div className="px-4 py-4 space-y-4">
-              {userNavigation.map((item) => (
+              {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -299,37 +253,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {item.name}
                 </Link>
               ))}
-              
-              {!loading && (
-                <div className="pt-4 space-y-2">
-                  {user ? (
-                    <UserMenu />
-                  ) : (
-                    <>
-                      <button 
-                        onClick={() => {
-                          setAuthModalMode('signin');
-                          setAuthModalOpen(true);
-                          setIsMenuOpen(false);
-                        }}
-                        className="w-full px-4 py-2 text-white border border-white/20 rounded-lg"
-                      >
-                        Login
-                      </button>
-                      <button 
-                        onClick={() => {
-                          setAuthModalMode('signup');
-                          setAuthModalOpen(true);
-                          setIsMenuOpen(false);
-                        }}
-                        className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium"
-                      >
-                        Sign Up
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
+              <div className="pt-4 space-y-2">
+                <button className="w-full px-4 py-2 text-white border border-white/20 rounded-lg">
+                  Login
+                </button>
+                <button className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium">
+                  Sign Up
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -393,13 +324,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
-
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        initialMode={authModalMode}
-      />
     </div>
   );
 };

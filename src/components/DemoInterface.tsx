@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { 
   Send, 
   Upload, 
@@ -467,73 +465,6 @@ Would you like me to:
     "Review intellectual property case"
   ];
 
-  // Custom markdown components for better styling
-  const markdownComponents = {
-    h1: ({ children }: any) => (
-      <h1 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
-        <Scale className="h-6 w-6" />
-        <span>{children}</span>
-      </h1>
-    ),
-    h2: ({ children }: any) => (
-      <h2 className="text-xl font-semibold text-white mb-3 mt-6 flex items-center space-x-2">
-        <div className="w-2 h-2 bg-white rounded-full"></div>
-        <span>{children}</span>
-      </h2>
-    ),
-    h3: ({ children }: any) => (
-      <h3 className="text-lg font-semibold text-gray-200 mb-2 mt-4">{children}</h3>
-    ),
-    p: ({ children }: any) => (
-      <p className="text-gray-300 mb-3 leading-relaxed">{children}</p>
-    ),
-    ul: ({ children }: any) => (
-      <ul className="space-y-2 mb-4">{children}</ul>
-    ),
-    ol: ({ children }: any) => (
-      <ol className="space-y-2 mb-4 list-decimal list-inside">{children}</ol>
-    ),
-    li: ({ children }: any) => (
-      <li className="text-gray-300 flex items-start space-x-2">
-        <span className="text-white">•</span>
-        <span>{children}</span>
-      </li>
-    ),
-    strong: ({ children }: any) => (
-      <strong className="text-white font-semibold">{children}</strong>
-    ),
-    em: ({ children }: any) => (
-      <em className="text-gray-200 italic">{children}</em>
-    ),
-    code: ({ children }: any) => (
-      <code className="bg-white/10 px-2 py-1 rounded text-gray-200 font-mono text-sm">
-        {children}
-      </code>
-    ),
-    blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-white/20 pl-4 my-4 text-gray-300 italic">
-        {children}
-      </blockquote>
-    ),
-    table: ({ children }: any) => (
-      <div className="overflow-x-auto mb-4">
-        <table className="min-w-full border border-white/20 rounded-lg">
-          {children}
-        </table>
-      </div>
-    ),
-    th: ({ children }: any) => (
-      <th className="border border-white/20 px-4 py-2 bg-white/10 text-white font-semibold text-left">
-        {children}
-      </th>
-    ),
-    td: ({ children }: any) => (
-      <td className="border border-white/20 px-4 py-2 text-gray-300">
-        {children}
-      </td>
-    )
-  };
-
   return (
     <div className="min-h-screen pt-16 flex flex-col">
       {/* Header */}
@@ -592,23 +523,7 @@ Would you like me to:
                     </button>
                   )}
 
-                  {message.type === 'assistant' ? (
-                    <div className="prose prose-invert max-w-none">
-                      <ReactMarkdown 
-                        remarkPlugins={[remarkGfm]}
-                        components={markdownComponents}
-                      >
-                        {message.content}
-                      </ReactMarkdown>
-                    </div>
-                  ) : (
-                    <ReactMarkdown 
-                      remarkPlugins={[remarkGfm]}
-                      className="prose prose-slate max-w-none"
-                    >
-                      {message.content}
-                    </ReactMarkdown>
-                  )}
+                  <div className="whitespace-pre-wrap">{message.content}</div>
                   
                   {message.attachments && (
                     <div className="mt-4 space-y-2">
