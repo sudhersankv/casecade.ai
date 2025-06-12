@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Scale, Menu, X } from 'lucide-react';
 import CursorTrail from './CursorTrail';
@@ -9,10 +9,37 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayChildren, setDisplayChildren] = useState(children);
   const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Scroll to top when location changes
+  // Handle page transitions
+  useEffect(() => {
+    if (displayChildren !== children) {
+      setIsTransitioning(true);
+      
+      // Start fade out
+      const timer = setTimeout(() => {
+        setDisplayChildren(children);
+        window.scrollTo(0, 0);
+        
+        // Start fade in
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 50);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [children, displayChildren]);
+
+  // Initialize display children
+  useEffect(() => {
+    setDisplayChildren(children);
+  }, []);
+
+  // Scroll to top when location changes (backup)
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
@@ -239,9 +266,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
       </header>
 
-      {/* Main Content */}
+      {/* Main Content with Transition */}
       <main className="relative z-10">
-        {children}
+        <div 
+          className={`transition-all duration-300 ease-in-out ${
+            isTransitioning 
+              ? 'opacity-0 transform translate-y-4' 
+              : 'opacity-100 transform translate-y-0'
+          }`}
+        >
+          {displayChildren}
+        </div>
       </main>
 
       {/* Footer */}
