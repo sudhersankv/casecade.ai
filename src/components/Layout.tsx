@@ -1,14 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Scale, Menu, X, User, LogOut } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
+import { Scale, Menu, X } from 'lucide-react';
 import CursorTrail from './CursorTrail';
-import AuthModal from './AuthModal';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,78 +9,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [displayChildren, setDisplayChildren] = useState(children);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // Check for existing session on mount
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    };
-
-    getSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
-        setIsLoading(false);
-        
-        if (event === 'SIGNED_IN') {
-          setIsAuthModalOpen(false);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
-
-  const openAuthModal = (mode: 'login' | 'signup') => {
-    setAuthMode(mode);
-    setIsAuthModalOpen(true);
-  };
-
-  // Handle page transitions
-  useEffect(() => {
-    if (displayChildren !== children) {
-      setIsTransitioning(true);
-      
-      // Start fade out
-      const timer = setTimeout(() => {
-        setDisplayChildren(children);
-        window.scrollTo(0, 0);
-        
-        // Start fade in
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 50);
-      }, 200);
-
-      return () => clearTimeout(timer);
-    }
-  }, [children, displayChildren]);
-
-  // Initialize display children
-  useEffect(() => {
-    setDisplayChildren(children);
-  }, []);
-
-  // Scroll to top when location changes (backup)
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -108,40 +31,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const gridSize = 40;
     let mouseX = 0;
     let mouseY = 0;
-
-    // Function to check if cursor is over any visible element (including text)
-    const isOverAnyElement = (x: number, y: number): boolean => {
-      const elements = document.elementsFromPoint(x, y);
-      return elements.some(el => {
-        // Skip the canvas itself and body/html
-        if (el.tagName.toLowerCase() === 'canvas' || 
-            el.tagName.toLowerCase() === 'body' || 
-            el.tagName.toLowerCase() === 'html') {
-          return false;
-        }
-
-        // Check for any element with content
-        const hasContent = el.textContent && el.textContent.trim().length > 0;
-        const hasBackground = window.getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)';
-        const hasBorder = window.getComputedStyle(el).borderWidth !== '0px';
-        const isInteractive = el.tagName.toLowerCase() === 'button' || 
-                             el.tagName.toLowerCase() === 'a' || 
-                             el.tagName.toLowerCase() === 'input' || 
-                             el.tagName.toLowerCase() === 'textarea' ||
-                             el.tagName.toLowerCase() === 'select' ||
-                             el.classList.contains('group') || 
-                             el.closest('button') ||
-                             el.closest('a') ||
-                             el.closest('input') ||
-                             el.closest('textarea') ||
-                             el.closest('[role="button"]') ||
-                             el.getAttribute('role') === 'button' ||
-                             window.getComputedStyle(el).cursor === 'pointer';
-
-        // Eclipse if element has text content, background, border, or is interactive
-        return hasContent || hasBackground || hasBorder || isInteractive;
-      });
-    };
 
     const drawGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -164,31 +53,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         ctx.stroke();
       }
 
-      // Check if cursor is over any element for eclipse effect
-      const isOverElement = isOverAnyElement(mouseX, mouseY);
-
-      // Draw interactive grid around cursor with eclipse effect
+      // Draw interactive grid around cursor
       const radius = 150;
       for (let x = 0; x <= canvas.width; x += gridSize) {
         for (let y = 0; y <= canvas.height; y += gridSize) {
           const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
           if (distance < radius) {
-            const baseOpacity = (1 - distance / radius) * 0.4;
-            
-            // Apply eclipse effect - reduce opacity when over any elements
-            const eclipseMultiplier = isOverElement ? 0.1 : 1;
-            const opacity = baseOpacity * eclipseMultiplier;
-            
+            const opacity = (1 - distance / radius) * 0.4;
             ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
             ctx.lineWidth = 2;
             ctx.strokeRect(x - gridSize/2, y - gridSize/2, gridSize, gridSize);
-            
-            // Add subtle shadow effect when eclipsed
-            if (isOverElement && distance < radius * 0.6) {
-              ctx.strokeStyle = `rgba(0, 0, 0, ${baseOpacity * 0.15})`;
-              ctx.lineWidth = 1;
-              ctx.strokeRect(x - gridSize/2 + 1, y - gridSize/2 + 1, gridSize, gridSize);
-            }
           }
         }
       }
@@ -264,38 +138,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              {isLoading ? (
-                <div className="w-20 h-10 bg-white/10 rounded-lg animate-pulse"></div>
-              ) : user ? (
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2 text-white">
-                    <User className="h-4 w-4" />
-                    <span className="text-sm">{user.email}</span>
-                  </div>
-                  <button
-                    onClick={handleSignOut}
-                    className="p-2 text-gray-400 hover:text-white transition-colors"
-                    title="Sign out"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <button
-                    onClick={() => openAuthModal('login')}
-                    className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300"
-                  >
-                    Login
-                  </button>
-                  <button
-                    onClick={() => openAuthModal('signup')}
-                    className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300"
-                  >
-                    Sign Up
-                  </button>
-                </>
-              )}
+              <button className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300">
+                Login
+              </button>
+              <button className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300">
+                Sign Up
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -325,49 +173,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Link>
               ))}
               <div className="pt-4 space-y-2">
-                {user ? (
-                  <div className="space-y-2">
-                    <div className="text-white text-sm">{user.email}</div>
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full px-4 py-2 text-white border border-white/20 rounded-lg"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => openAuthModal('login')}
-                      className="w-full px-4 py-2 text-white border border-white/20 rounded-lg"
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={() => openAuthModal('signup')}
-                      className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium"
-                    >
-                      Sign Up
-                    </button>
-                  </>
-                )}
+                <button className="w-full px-4 py-2 text-white border border-white/20 rounded-lg">
+                  Login
+                </button>
+                <button className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium">
+                  Sign Up
+                </button>
               </div>
             </div>
           </div>
         )}
       </header>
 
-      {/* Main Content with Transition */}
+      {/* Main Content */}
       <main className="relative z-10">
-        <div 
-          className={`transition-all duration-300 ease-in-out ${
-            isTransitioning 
-              ? 'opacity-0 transform translate-y-4' 
-              : 'opacity-100 transform translate-y-0'
-          }`}
-        >
-          {displayChildren}
-        </div>
+        {children}
       </main>
 
       {/* Footer */}
@@ -415,14 +235,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        mode={authMode}
-        onModeChange={setAuthMode}
-      />
     </div>
   );
 };
