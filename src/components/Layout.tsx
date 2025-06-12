@@ -1,7 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Scale, Menu, X } from 'lucide-react';
 import CursorTrail from './CursorTrail';
+import AuthModal from './auth/AuthModal';
+import UserMenu from './auth/UserMenu';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,8 +12,57 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayChildren, setDisplayChildren] = useState(children);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'signin' | 'signup'>('signin');
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { user, loading } = useAuth();
+
+  // Handle auth modal from URL params
+  useEffect(() => {
+    const authParam = searchParams.get('auth');
+    if (authParam === 'signin' || authParam === 'signup') {
+      setAuthModalMode(authParam);
+      setAuthModalOpen(true);
+      // Remove auth param from URL
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('auth');
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  // Handle page transitions
+  useEffect(() => {
+    if (displayChildren !== children) {
+      setIsTransitioning(true);
+      
+      // Start fade out
+      const timer = setTimeout(() => {
+        setDisplayChildren(children);
+        window.scrollTo(0, 0);
+        
+        // Start fade in
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 50);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [children, displayChildren]);
+
+  // Initialize display children
+  useEffect(() => {
+    setDisplayChildren(children);
+  }, []);
+
+  // Scroll to top when location changes (backup)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -31,6 +83,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const gridSize = 40;
     let mouseX = 0;
     let mouseY = 0;
+
+    // Function to check if cursor is over any visible element (including text)
+    const isOverAnyElement = (x: number, y: number): boolean => {
+      const elements = document.elementsFromPoint(x, y);
+      return elements.some(el => {
+        // Skip the canvas itself and body/html
+        if (el.tagName.toLowerCase() === 'canvas' || 
+            el.tagName.toLowerCase() === 'body' || 
+            el.tagName.toLowerCase() === 'html') {
+          return false;
+        }
+
+        // Check for any element with content
+        const hasContent = el.textContent && el.textContent.trim().length > 0;
+        const hasBackground = window.getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)';
+        const hasBorder = window.getComputedStyle(el).borderWidth !== '0px';
+        const isInteractive = el.tagName.toLowerCase() === 'button' || 
+                             el.tagName.toLowerCase() === 'a' || 
+                             el.tagName.toLowerCase() === 'input' || 
+                             el.tagName.toLowerCase() === 'textarea' ||
+                             el.tagName.toLowerCase() === 'select' ||
+                             el.classList.contains('group') || 
+                             el.closest('button') ||
+                             el.closest('a') ||
+                             el.closest('input') ||
+                             el.closest('textarea') ||
+                             el.closest('[role="button"]') ||
+                             el.getAttribute('role') === 'button' ||
+                             window.getComputedStyle(el).cursor === 'pointer';
+
+        // Eclipse if element has text content, background, border, or is interactive
+        return hasContent || hasBackground || hasBorder || isInteractive;
+      });
+    };
 
     const drawGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -53,16 +139,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         ctx.stroke();
       }
 
-      // Draw interactive grid around cursor
+      // Check if cursor is over any element for eclipse effect
+      const isOverElement = isOverAnyElement(mouseX, mouseY);
+
+      // Draw interactive grid around cursor with eclipse effect
       const radius = 150;
       for (let x = 0; x <= canvas.width; x += gridSize) {
         for (let y = 0; y <= canvas.height; y += gridSize) {
           const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
           if (distance < radius) {
-            const opacity = (1 - distance / radius) * 0.4;
+            const baseOpacity = (1 - distance / radius) * 0.4;
+            
+            // Apply eclipse effect - reduce opacity when over any elements
+            const eclipseMultiplier = isOverElement ? 0.1 : 1;
+            const opacity = baseOpacity * eclipseMultiplier;
+            
             ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
             ctx.lineWidth = 2;
             ctx.strokeRect(x - gridSize/2, y - gridSize/2, gridSize, gridSize);
+            
+            // Add subtle shadow effect when eclipsed
+            if (isOverElement && distance < radius * 0.6) {
+              ctx.strokeStyle = `rgba(0, 0, 0, ${baseOpacity * 0.15})`;
+              ctx.lineWidth = 1;
+              ctx.strokeRect(x - gridSize/2 + 1, y - gridSize/2 + 1, gridSize, gridSize);
+            }
           }
         }
       }
@@ -94,6 +195,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Contact', href: '/contact' },
   ];
 
+  // Add dashboard to navigation for authenticated users
+  const userNavigation = user ? [
+    { name: 'Dashboard', href: '/dashboard' },
+    ...navigation.filter(item => item.name !== 'Home')
+  ] : navigation;
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
       {/* Animated Grid Background */}
@@ -109,7 +216,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-3">
+            <Link to={user ? "/dashboard" : "/"} className="flex items-center space-x-3">
               <div className="bg-white p-2 rounded-lg">
                 <Scale className="h-8 w-8 text-black" />
               </div>
@@ -121,7 +228,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              {navigation.map((item) => (
+              {userNavigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -136,14 +243,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               ))}
             </nav>
 
-            {/* Auth Buttons */}
+            {/* Auth Buttons / User Menu */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300">
-                Login
-              </button>
-              <button className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300">
-                Sign Up
-              </button>
+              {loading ? (
+                <div className="w-8 h-8 bg-white/10 rounded-lg animate-pulse"></div>
+              ) : user ? (
+                <UserMenu />
+              ) : (
+                <>
+                  <button 
+                    onClick={() => {
+                      setAuthModalMode('signin');
+                      setAuthModalOpen(true);
+                    }}
+                    className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300"
+                  >
+                    Login
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setAuthModalMode('signup');
+                      setAuthModalOpen(true);
+                    }}
+                    className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -160,7 +287,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {isMenuOpen && (
           <div className="md:hidden bg-black/95 backdrop-blur-sm border-t border-white/10">
             <div className="px-4 py-4 space-y-4">
-              {navigation.map((item) => (
+              {userNavigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -172,22 +299,53 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {item.name}
                 </Link>
               ))}
-              <div className="pt-4 space-y-2">
-                <button className="w-full px-4 py-2 text-white border border-white/20 rounded-lg">
-                  Login
-                </button>
-                <button className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium">
-                  Sign Up
-                </button>
-              </div>
+              
+              {!loading && (
+                <div className="pt-4 space-y-2">
+                  {user ? (
+                    <UserMenu />
+                  ) : (
+                    <>
+                      <button 
+                        onClick={() => {
+                          setAuthModalMode('signin');
+                          setAuthModalOpen(true);
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-white border border-white/20 rounded-lg"
+                      >
+                        Login
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setAuthModalMode('signup');
+                          setAuthModalOpen(true);
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium"
+                      >
+                        Sign Up
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
       </header>
 
-      {/* Main Content */}
+      {/* Main Content with Transition */}
       <main className="relative z-10">
-        {children}
+        <div 
+          className={`transition-all duration-300 ease-in-out ${
+            isTransitioning 
+              ? 'opacity-0 transform translate-y-4' 
+              : 'opacity-100 transform translate-y-0'
+          }`}
+        >
+          {displayChildren}
+        </div>
       </main>
 
       {/* Footer */}
@@ -235,6 +393,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authModalMode}
+      />
     </div>
   );
 };
