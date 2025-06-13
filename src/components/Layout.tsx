@@ -166,7 +166,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link to="/" className="flex items-center space-x-3">
               <div>
                 <h1 className="text-xl font-bold text-white">
-                  cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade
+                  cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade.ai
                 </h1>
                 <p className="text-xs text-gray-400 hidden sm:block">
                   <span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Intelligence
@@ -253,7 +253,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center space-x-3 mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">
-                    cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade
+                    cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade.ai
                   </h3>
                   <p className="text-sm text-gray-400">
                     <span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Intelligence
@@ -287,7 +287,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
           
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 cascade.ai. All rights reserved.</p>
+            <p>&copy; 2024 casecade.ai. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -83,7 +83,7 @@ const Home: React.FC = () => {
               </h1>
               
               <p className="text-xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-                Transform your <span className="text-gray-300">legal</span> practice with <span className="text-gray-300">AI</span>-powered case analysis, automated timeline generation, 
+                Transform your legal practice with <span className="text-gray-300">AI</span>-powered case analysis, automated timeline generation, 
                 and intelligent precedent discovery. Access 2.3M+ cases with advanced temporal reasoning.
               </p>
               
@@ -121,7 +121,7 @@ const Home: React.FC = () => {
               Powerful <span className="text-gray-300">AI</span> Features
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Advanced temporal reasoning and comprehensive <span className="text-gray-300">legal</span> analysis
+              Advanced temporal reasoning and comprehensive legal analysis
             </p>
           </div>
           
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Trusted by <span className="text-gray-300">Legal</span> Professionals
+              Trusted by Legal Professionals
             </h2>
           </div>
           
@@ -202,11 +202,11 @@ const Home: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white/5 border border-white/10 rounded-3xl p-12">
             <h2 className="text-4xl font-bold mb-6 text-white">
-              Ready to Transform Your <span className="text-gray-300">Legal</span> Practice?
+              Ready to Transform Your Legal Practice?
             </h2>
             
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of <span className="text-gray-300">legal</span> professionals who trust cascade.ai for advanced case analysis and research.
+              Join thousands of legal professionals who trust casecade.ai for advanced case analysis and research.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">

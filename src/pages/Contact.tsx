@@ -50,7 +50,7 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: "Email Us",
-      details: "hello@cascade.ai",
+      details: "hello@casecade.ai",
       description: "Get in touch for general inquiries"
     },
     {
@@ -96,8 +96,8 @@ const Contact: React.FC = () => {
               Get in Touch
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Ready to transform your <span className="text-gray-300">legal</span> practice? We're here to help you get started 
-              with cascade.ai and answer any questions you might have.
+              Ready to transform your legal practice? We're here to help you get started 
+              with casecade.ai and answer any questions you might have.
             </p>
           </div>
         </div>
@@ -272,7 +272,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div className="text-left">
                       <div className="font-semibold text-white">Schedule a Demo</div>
-                      <div className="text-sm text-gray-400">See cascade.ai in action</div>
+                      <div className="text-sm text-gray-400">See casecade.ai in action</div>
                     </div>
                   </button>
                   
@@ -310,7 +310,7 @@ const Contact: React.FC = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-xl text-gray-400">
-              Quick answers to common questions about cascade.ai
+              Quick answers to common questions about casecade.ai
             </p>
           </div>
           
