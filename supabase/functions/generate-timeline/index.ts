@@ -433,7 +433,8 @@ Return JSON array format only.`;
     const seenDescriptions = new Set<string>();
 
     for (const event of events) {
-      const normalizedDesc = event.description.toLowerCase()
+      // Add null check for event.description
+      const normalizedDesc = (event.description || '').toLowerCase()
         .replace(/[^\w\s]/g, '')
         .replace(/\s+/g, ' ')
         .trim();
@@ -470,7 +471,7 @@ Return JSON array format only.`;
             }
 
             temporalRelations.push({
-              related_event: otherEvent.description,
+              related_event: otherEvent.description || '',
               relation,
               days_difference: Math.abs(daysDiff),
               confidence: Math.abs(daysDiff) > 1 ? 'high' : 'medium'
@@ -569,7 +570,7 @@ Return JSON array format only.`;
         : `Step ${index + 1}`;
 
       lines.push(
-        event.description,
+        event.description || 'No description',
         `${dateDisplay} | ${event.importance}`,
         `Parties: ${event.parties?.join(', ') || 'Unknown'}`,
         ''
@@ -601,8 +602,8 @@ async function storeTimelineInDatabase(supabaseClient: any, caseId: string, time
         .insert({
           case_id: caseId,
           event_date: event.date !== 'inferred' ? event.date.split('T')[0] : null,
-          event_title: event.description,
-          event_description: event.context || event.description,
+          event_title: event.description || 'No title',
+          event_description: event.context || event.description || 'No description',
           event_type: event.event_type,
           importance_level: event.importance,
           metadata: {
