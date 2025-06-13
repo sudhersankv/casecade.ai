@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Scale, Menu, X } from 'lucide-react';
 import CursorTrail from './CursorTrail';
+import SilverFireflies from './SilverFireflies';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -75,7 +76,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Draw base grid with subtle silver tint
-      ctx.strokeStyle = 'rgba(192, 192, 192, 0.02)';
+      ctx.strokeStyle = 'rgba(192, 192, 192, 0.015)';
       ctx.lineWidth = 1;
 
       for (let x = 0; x <= canvas.width; x += gridSize) {
@@ -101,7 +102,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         for (let y = 0; y <= canvas.height; y += gridSize) {
           const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
           if (distance < radius) {
-            const baseOpacity = (1 - distance / radius) * 0.25;
+            const baseOpacity = (1 - distance / radius) * 0.2;
             
             // Apply eclipse effect - reduce opacity when over any elements
             const eclipseMultiplier = isOverElement ? 0.1 : 1;
@@ -156,6 +157,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         className="fixed inset-0 pointer-events-none z-0"
       />
 
+      {/* Silver Fireflies */}
+      <SilverFireflies />
+
       {/* Cursor Trail */}
       <CursorTrail />
 
@@ -166,10 +170,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link to="/" className="flex items-center space-x-3">
               <div>
                 <h1 className="text-xl font-bold text-white">
-                  cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade.ai
+                  cas<span className="text-silver-400 drop-shadow-sm">(</span><span className="text-silver-300 drop-shadow-lg animate-pulse">e</span><span className="text-silver-400 drop-shadow-sm">)</span>cade.ai
                 </h1>
                 <p className="text-xs text-gray-400 hidden sm:block">
-                  <span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Intelligence
+                  <span className="text-silver-300">AI</span> <span className="text-silver-300">Legal</span> Intelligence
                 </p>
               </div>
             </Link>
@@ -180,9 +184,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`text-sm font-medium transition-colors duration-300 hover:text-white ${
+                  className={`text-sm font-medium transition-colors duration-300 hover:text-silver-300 ${
                     location.pathname === item.href
-                      ? 'text-white border-b-2 border-white pb-1'
+                      ? 'text-silver-300 border-b-2 border-silver-400 pb-1'
                       : 'text-gray-400'
                   }`}
                 >
@@ -193,10 +197,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="px-4 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300">
+              <button className="px-4 py-2 text-white border border-silver-400/30 rounded-lg hover:bg-silver-500/10 hover:border-silver-300/50 transition-all duration-300 hover:shadow-lg hover:shadow-silver-500/20">
                 Login
               </button>
-              <button className="px-4 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-all duration-300">
+              <button className="px-4 py-2 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-lg font-medium hover:from-silver-300 hover:to-silver-200 transition-all duration-300 hover:shadow-lg hover:shadow-silver-400/30 transform hover:scale-105">
                 Sign Up
               </button>
             </div>
@@ -220,7 +224,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   key={item.name}
                   to={item.href}
                   className={`block text-sm font-medium transition-colors duration-300 ${
-                    location.pathname === item.href ? 'text-white' : 'text-gray-400'
+                    location.pathname === item.href ? 'text-silver-300' : 'text-gray-400'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -228,10 +232,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Link>
               ))}
               <div className="pt-4 space-y-2">
-                <button className="w-full px-4 py-2 text-white border border-white/20 rounded-lg">
+                <button className="w-full px-4 py-2 text-white border border-silver-400/30 rounded-lg hover:bg-silver-500/10">
                   Login
                 </button>
-                <button className="w-full px-4 py-2 bg-white text-black rounded-lg font-medium">
+                <button className="w-full px-4 py-2 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-lg font-medium">
                   Sign Up
                 </button>
               </div>
@@ -253,10 +257,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center space-x-3 mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">
-                    cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade.ai
+                    cas<span className="text-silver-400">(</span><span className="text-silver-300">e</span><span className="text-silver-400">)</span>cade.ai
                   </h3>
                   <p className="text-sm text-gray-400">
-                    <span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Intelligence
+                    <span className="text-silver-300">AI</span> <span className="text-silver-300">Legal</span> Intelligence
                   </p>
                 </div>
               </div>
@@ -269,19 +273,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link to="/demo" className="hover:text-white transition-colors">Demo</Link></li>
-                <li><Link to="/examples" className="hover:text-white transition-colors">Examples</Link></li>
+                <li><Link to="/features" className="hover:text-silver-300 transition-colors">Features</Link></li>
+                <li><Link to="/demo" className="hover:text-silver-300 transition-colors">Demo</Link></li>
+                <li><Link to="/examples" className="hover:text-silver-300 transition-colors">Examples</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="text-white font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
+                <li><Link to="/about" className="hover:text-silver-300 transition-colors">About</Link></li>
+                <li><Link to="/contact" className="hover:text-silver-300 transition-colors">Contact</Link></li>
+                <li><a href="#" className="hover:text-silver-300 transition-colors">Privacy</a></li>
+                <li><a href="#" className="hover:text-silver-300 transition-colors">Terms</a></li>
               </ul>
             </div>
           </div>

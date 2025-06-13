@@ -68,9 +68,9 @@ const Home: React.FC = () => {
             <div className={`transition-all duration-1000 delay-300 transform ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}>
-              <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 rounded-full px-6 py-3 mb-8">
-                <Sparkles className="h-4 w-4 text-white" />
-                <span className="text-white font-medium">Powered by Advanced <span className="text-gray-300">AI</span></span>
+              <div className="inline-flex items-center space-x-2 bg-white/5 border border-silver-400/20 rounded-full px-6 py-3 mb-8 hover:bg-silver-500/5 hover:border-silver-300/30 transition-all duration-300">
+                <Sparkles className="h-4 w-4 text-silver-300" />
+                <span className="text-white font-medium">Powered by Advanced <span className="text-silver-300">AI</span></span>
               </div>
               
               <h1 className="text-5xl sm:text-7xl font-bold mb-6 leading-tight">
@@ -78,19 +78,19 @@ const Home: React.FC = () => {
                   Revolutionary
                 </span>
                 <span className="text-white block mt-2">
-                  <span className="text-gray-300">Legal</span> <span className="text-gray-300">AI</span> Assistant
+                  <span className="text-silver-300 drop-shadow-lg">Legal</span> <span className="text-silver-300 drop-shadow-lg">AI</span> Assistant
                 </span>
               </h1>
               
               <p className="text-xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-                Transform your legal practice with <span className="text-gray-300">AI</span>-powered case analysis, automated timeline generation, 
+                Transform your legal practice with <span className="text-silver-300">AI</span>-powered case analysis, automated timeline generation, 
                 and intelligent precedent discovery. Access 2.3M+ cases with advanced temporal reasoning.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
                 <Link 
                   to="/demo"
-                  className="group px-8 py-4 bg-white text-black rounded-xl font-bold text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
+                  className="group px-8 py-4 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-xl font-bold text-lg hover:from-silver-300 hover:to-silver-200 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-silver-400/30"
                 >
                   <span className="flex items-center space-x-2">
                     <span>Try Demo</span>
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
                 
                 <Link 
                   to="/features"
-                  className="group px-8 py-4 border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                  className="group px-8 py-4 border-2 border-silver-400/30 text-white rounded-xl font-bold text-lg hover:bg-silver-500/10 hover:border-silver-300/50 transition-all duration-300 hover:shadow-lg hover:shadow-silver-500/20"
                 >
                   <span className="flex items-center space-x-2">
                     <span>Learn More</span>
@@ -118,7 +118,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Powerful <span className="text-gray-300">AI</span> Features
+              Powerful <span className="text-silver-300 drop-shadow-lg">AI</span> Features
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Advanced temporal reasoning and comprehensive legal analysis
@@ -129,15 +129,15 @@ const Home: React.FC = () => {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2"
+                className="group bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-silver-400/30 hover:bg-silver-500/5 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-lg hover:shadow-silver-500/20"
               >
                 <div className="mb-6">
-                  <div className="bg-white p-3 rounded-xl w-fit">
+                  <div className="bg-gradient-to-br from-silver-400 to-silver-300 p-3 rounded-xl w-fit hover:shadow-lg hover:shadow-silver-400/30 transition-all duration-300">
                     <feature.icon className="h-6 w-6 text-black" />
                   </div>
                 </div>
                 
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-gray-200 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-silver-200 transition-colors duration-300">
                   {feature.title}
                 </h3>
                 
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Trusted by Legal Professionals
+              Trusted by <span className="text-silver-300 drop-shadow-lg">Legal</span> Professionals
             </h2>
           </div>
           
@@ -171,17 +171,19 @@ const Home: React.FC = () => {
                     isActive ? 'scale-110' : 'scale-100'
                   }`}
                 >
-                  <div className={`bg-white/5 border rounded-2xl p-8 transition-all duration-500 ${
-                    isActive ? 'border-white/30 bg-white/10' : 'border-white/10'
+                  <div className={`bg-white/5 border rounded-2xl p-8 transition-all duration-500 hover:shadow-lg hover:shadow-silver-500/20 ${
+                    isActive ? 'border-silver-400/40 bg-silver-500/5 shadow-lg shadow-silver-500/20' : 'border-white/10'
                   }`}>
                     <div className="mb-6">
-                      <div className="mx-auto w-16 h-16 bg-white p-4 rounded-xl">
+                      <div className={`mx-auto w-16 h-16 p-4 rounded-xl transition-all duration-500 ${
+                        isActive ? 'bg-gradient-to-br from-silver-400 to-silver-300 shadow-lg shadow-silver-400/30' : 'bg-gradient-to-br from-silver-500 to-silver-400'
+                      }`}>
                         <Icon className="h-8 w-8 text-black" />
                       </div>
                     </div>
                     
                     <div className={`text-4xl font-bold mb-2 transition-all duration-500 ${
-                      isActive ? 'text-white' : 'text-gray-300'
+                      isActive ? 'text-silver-200' : 'text-gray-300'
                     }`}>
                       {stat.value}
                     </div>
@@ -200,9 +202,9 @@ const Home: React.FC = () => {
       {/* CTA Section */}
       <section className="py-20 bg-white/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-12">
+          <div className="bg-white/5 border border-silver-400/20 rounded-3xl p-12 hover:bg-silver-500/5 hover:border-silver-300/30 transition-all duration-500">
             <h2 className="text-4xl font-bold mb-6 text-white">
-              Ready to Transform Your Legal Practice?
+              Ready to Transform Your <span className="text-silver-300 drop-shadow-lg">Legal</span> Practice?
             </h2>
             
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -210,7 +212,7 @@ const Home: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button className="group px-10 py-4 bg-white text-black rounded-xl font-bold text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
+              <button className="group px-10 py-4 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-xl font-bold text-lg hover:from-silver-300 hover:to-silver-200 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-silver-400/30">
                 <span className="flex items-center space-x-2">
                   <span>Get Started Now</span>
                   <Zap className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300" />
@@ -219,7 +221,7 @@ const Home: React.FC = () => {
               
               <Link 
                 to="/demo"
-                className="group px-10 py-4 border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                className="group px-10 py-4 border-2 border-silver-400/30 text-white rounded-xl font-bold text-lg hover:bg-silver-500/10 hover:border-silver-300/50 transition-all duration-300 hover:shadow-lg hover:shadow-silver-500/20"
               >
                 <span className="flex items-center space-x-2">
                   <span>Try Demo</span>

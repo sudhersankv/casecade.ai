@@ -95,16 +95,16 @@ const CursorTrail: React.FC = () => {
           const eclipseMultiplier = (point.isEclipsed || currentlyOverElement) ? 0.15 : 1;
           const opacity = baseOpacity * eclipseMultiplier;
           
-          // Draw main glowing circle with eclipse effect
+          // Draw main glowing circle with silver tint
           ctx.beginPath();
           ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.6})`;
+          ctx.fillStyle = `rgba(220, 220, 220, ${opacity * 0.7})`;
           ctx.fill();
           
           // Draw outer glow with stronger eclipse effect
           ctx.beginPath();
           ctx.arc(point.x, point.y, size * 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.1})`;
+          ctx.fillStyle = `rgba(192, 192, 192, ${opacity * 0.15})`;
           ctx.fill();
           
           // Add subtle shadow effect when eclipsed
