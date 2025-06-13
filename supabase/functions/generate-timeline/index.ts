@@ -43,6 +43,7 @@ interface TimelineEvent {
     days_difference: number;
     confidence: string;
   }>;
+  sequence_order?: number;
 }
 
 interface TimelineData {
@@ -560,7 +561,7 @@ Return JSON array format only.`;
       return 'No events found in timeline.';
     }
 
-    const lines = ['Case Timeline', '=' * 50, ''];
+    const lines = ['Case Timeline', '='.repeat(50), ''];
 
     events.forEach((event, index) => {
       const dateDisplay = event.date !== 'inferred' 
@@ -576,7 +577,7 @@ Return JSON array format only.`;
     });
 
     lines.push(
-      '=' * 50,
+      '='.repeat(50),
       'Summary:',
       `Total Events: ${timelineData.metadata.total_events}`,
       `Explicit Events: ${timelineData.metadata.explicit_events}`,
