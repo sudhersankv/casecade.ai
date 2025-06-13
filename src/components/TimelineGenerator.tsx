@@ -15,7 +15,8 @@ import {
   Sparkles,
   ArrowRight,
   Brain,
-  Zap
+  Zap,
+  ExternalLink
 } from 'lucide-react';
 
 interface TimelineEvent {
@@ -66,6 +67,7 @@ const TimelineGenerator: React.FC = () => {
   const [timelineData, setTimelineData] = useState<TimelineData | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [processingStatus, setProcessingStatus] = useState<string>('');
+  const [showDeploymentInfo, setShowDeploymentInfo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,7 +108,14 @@ const TimelineGenerator: React.FC = () => {
         }
       }
 
-      setProcessingStatus('Analyzing document structure...');
+      setProcessingStatus('Checking Supabase Edge Function availability...');
+
+      // Check if Supabase environment variables are available
+      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        throw new Error('Supabase configuration not found. Please set up Supabase connection.');
+      }
+
+      setProcessingStatus('Calling timeline generation service...');
 
       // Call the enhanced timeline generation function
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-timeline`, {
@@ -126,6 +135,9 @@ const TimelineGenerator: React.FC = () => {
       });
 
       if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('EDGE_FUNCTION_NOT_DEPLOYED');
+        }
         throw new Error(`Timeline generation failed: ${response.statusText}`);
       }
 
@@ -140,13 +152,19 @@ const TimelineGenerator: React.FC = () => {
 
     } catch (error) {
       console.error('Timeline generation error:', error);
-      setProcessingStatus(`Error: ${error.message}`);
+      
+      if (error.message === 'EDGE_FUNCTION_NOT_DEPLOYED') {
+        setProcessingStatus('Edge function not deployed. Using demo mode...');
+        setShowDeploymentInfo(true);
+      } else {
+        setProcessingStatus(`Service unavailable. Using demo mode...`);
+      }
       
       // Fallback to mock data for demonstration
       setTimeout(() => {
         setTimelineData(getMockTimelineData());
         setProcessingStatus('Timeline generated (demo mode)');
-      }, 1000);
+      }, 1500);
     } finally {
       setIsGenerating(false);
     }
@@ -160,9 +178,9 @@ const TimelineGenerator: React.FC = () => {
         implicit_events: 2,
         dated_events: 4,
         undated_events: 4,
-        model_used: "gemini-2.0-flash",
+        model_used: "demo-mode",
         generated_at: new Date().toISOString(),
-        api_calls_used: 3,
+        api_calls_used: 0,
         chunks_processed: 1
       },
       timeline: {
@@ -369,6 +387,46 @@ const TimelineGenerator: React.FC = () => {
       </div>
 
       <div className="max-w-6xl mx-auto p-6">
+        {/* Deployment Info Banner */}
+        {showDeploymentInfo && (
+          <div className="mb-6 bg-yellow-500/10 border border-yellow-500/20 rounded-3xl p-6">
+            <div className="flex items-start space-x-4">
+              <AlertCircle className="h-6 w-6 text-yellow-400 flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-yellow-300 mb-2">Edge Function Deployment Required</h3>
+                <p className="text-yellow-200 mb-4">
+                  The AI timeline generation service requires deploying the Supabase Edge Function. Currently running in demo mode with sample data.
+                </p>
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 mb-4">
+                  <h4 className="font-medium text-yellow-300 mb-2">To enable full AI functionality:</h4>
+                  <ol className="list-decimal list-inside space-y-1 text-sm text-yellow-200">
+                    <li>Install Supabase CLI</li>
+                    <li>Run: <code className="bg-black/20 px-2 py-1 rounded">supabase functions deploy generate-timeline</code></li>
+                    <li>Set up your Gemini API key in Supabase secrets</li>
+                  </ol>
+                </div>
+                <div className="flex space-x-3">
+                  <a
+                    href="https://supabase.com/docs/guides/functions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg text-yellow-300 hover:bg-yellow-500/30 transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span>Deployment Guide</span>
+                  </a>
+                  <button
+                    onClick={() => setShowDeploymentInfo(false)}
+                    className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors"
+                  >
+                    Continue with Demo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {!timelineData ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Input Section */}
@@ -525,6 +583,9 @@ const TimelineGenerator: React.FC = () => {
                   <h2 className="text-3xl font-bold text-white mb-2">Advanced Timeline Generated</h2>
                   <p className="text-gray-400">
                     Found {timelineData.metadata.total_events} events ({timelineData.metadata.explicit_events} explicit, {timelineData.metadata.implicit_events} implicit)
+                    {timelineData.metadata.model_used === 'demo-mode' && (
+                      <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded text-sm">Demo Mode</span>
+                    )}
                   </p>
                 </div>
                 <div className="flex space-x-4">
