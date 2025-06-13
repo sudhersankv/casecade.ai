@@ -206,7 +206,7 @@ const Home: React.FC = () => {
             </h2>
             
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of legal professionals who trust LegalMind AI for advanced case analysis and research.
+              Join thousands of legal professionals who trust cascade.ai for advanced case analysis and research.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">

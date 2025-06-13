@@ -50,7 +50,7 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: "Email Us",
-      details: "hello@legalmind.ai",
+      details: "hello@cascade.ai",
       description: "Get in touch for general inquiries"
     },
     {
@@ -97,7 +97,7 @@ const Contact: React.FC = () => {
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Ready to transform your legal practice? We're here to help you get started 
-              with LegalMind AI and answer any questions you might have.
+              with cascade.ai and answer any questions you might have.
             </p>
           </div>
         </div>
@@ -272,7 +272,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div className="text-left">
                       <div className="font-semibold text-white">Schedule a Demo</div>
-                      <div className="text-sm text-gray-400">See LegalMind AI in action</div>
+                      <div className="text-sm text-gray-400">See cascade.ai in action</div>
                     </div>
                   </button>
                   
@@ -310,7 +310,7 @@ const Contact: React.FC = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-xl text-gray-400">
-              Quick answers to common questions about LegalMind AI
+              Quick answers to common questions about cascade.ai
             </p>
           </div>
           

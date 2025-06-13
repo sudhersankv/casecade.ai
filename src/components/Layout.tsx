@@ -75,7 +75,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Draw base grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
       ctx.lineWidth = 1;
 
       for (let x = 0; x <= canvas.width; x += gridSize) {
@@ -101,7 +101,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         for (let y = 0; y <= canvas.height; y += gridSize) {
           const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
           if (distance < radius) {
-            const baseOpacity = (1 - distance / radius) * 0.4;
+            const baseOpacity = (1 - distance / radius) * 0.3;
             
             // Apply eclipse effect - reduce opacity when over any elements
             const eclipseMultiplier = isOverElement ? 0.1 : 1;
@@ -164,12 +164,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-3">
-              <div className="bg-white p-2 rounded-lg">
-                <Scale className="h-8 w-8 text-black" />
-              </div>
               <div>
-                <h1 className="text-xl font-bold text-white">LegalMind AI</h1>
-                <p className="text-xs text-gray-400 hidden sm:block">Advanced Legal Intelligence</p>
+                <h1 className="text-xl font-bold text-white">
+                  cas<span className="text-gray-400">(e)</span>cade
+                </h1>
+                <p className="text-xs text-gray-400 hidden sm:block">AI Legal Intelligence</p>
               </div>
             </Link>
 
@@ -250,12 +249,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="bg-white p-2 rounded-lg">
-                  <Scale className="h-6 w-6 text-black" />
-                </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">LegalMind AI</h3>
-                  <p className="text-sm text-gray-400">Advanced Legal Intelligence</p>
+                  <h3 className="text-lg font-bold text-white">
+                    cas<span className="text-gray-400">(e)</span>cade
+                  </h3>
+                  <p className="text-sm text-gray-400">AI Legal Intelligence</p>
                 </div>
               </div>
               <p className="text-gray-400 max-w-md">
@@ -285,7 +283,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
           
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 LegalMind AI. All rights reserved.</p>
+            <p>&copy; 2024 cascade.ai. All rights reserved.</p>
           </div>
         </div>
       </footer>

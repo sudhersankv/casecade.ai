@@ -36,7 +36,7 @@ const DemoInterface: React.FC = () => {
     {
       id: '1',
       type: 'assistant',
-      content: `Welcome to LegalMind AI! 🏛️
+      content: `Welcome to cascade.ai! 🏛️
 
 I'm your AI Legal Assistant powered by advanced temporal reasoning and comprehensive case analysis. Here's how I can help:
 
