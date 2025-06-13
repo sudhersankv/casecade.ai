@@ -38,18 +38,18 @@ const DemoInterface: React.FC = () => {
       type: 'assistant',
       content: `Welcome to cascade.ai! 🏛️
 
-I'm your AI Legal Assistant powered by advanced temporal reasoning and comprehensive case analysis. Here's how I can help:
+I'm your <span class="text-gray-300">AI</span> <span class="text-gray-300">Legal</span> Assistant powered by advanced temporal reasoning and comprehensive case analysis. Here's how I can help:
 
 ## Core Capabilities
-- **Case Analysis**: Deep dive into legal strengths, weaknesses, and strategic opportunities
+- **Case Analysis**: Deep dive into <span class="text-gray-300">legal</span> strengths, weaknesses, and strategic opportunities
 - **Timeline Generation**: Create detailed chronological case timelines automatically  
-- **Precedent Discovery**: Search 2.3M+ legal cases for relevant precedents
-- **Document Analysis**: Extract key information from legal documents
-- **Strategic Insights**: AI-powered recommendations based on similar cases
+- **Precedent Discovery**: Search 2.3M+ <span class="text-gray-300">legal</span> cases for relevant precedents
+- **Document Analysis**: Extract key information from <span class="text-gray-300">legal</span> documents
+- **Strategic Insights**: <span class="text-gray-300">AI</span>-powered recommendations based on similar cases
 
 ## Getting Started
 You can interact with me by:
-- **Typing** your case details or legal questions
+- **Typing** your case details or <span class="text-gray-300">legal</span> questions
 - **Uploading** documents (PDF, Word, text files)
 - **Recording** voice notes for hands-free input
 
@@ -59,7 +59,7 @@ You can interact with me by:
 - "Create a timeline for my personal injury case"
 - "What are the key elements of a contract dispute?"
 
-**How can I assist you with your legal work today?**`,
+**How can I assist you with your <span class="text-gray-300">legal</span> work today?**`,
       timestamp: new Date()
     }
   ]);
@@ -90,7 +90,7 @@ You can interact with me by:
       return `# Employment Law Analysis ⚖️
 
 ## Case Assessment Complete
-I've analyzed your employment matter using our comprehensive legal database:
+I've analyzed your employment matter using our comprehensive <span class="text-gray-300">legal</span> database:
 
 ### Key Findings
 - **Case Type**: Employment Discrimination/Wrongful Termination
@@ -124,10 +124,10 @@ Recent similar cases show:
       return `# Personal Injury Case Analysis 🏥
 
 ## Comprehensive Case Review
-I've analyzed your personal injury matter with advanced AI assessment:
+I've analyzed your personal injury matter with advanced <span class="text-gray-300">AI</span> assessment:
 
 ### Liability Analysis
-- **Duty of Care**: Establishing defendant's legal obligation
+- **Duty of Care**: Establishing defendant's <span class="text-gray-300">legal</span> obligation
 - **Breach of Duty**: How defendant failed to meet standard of care
 - **Causation**: Direct link between breach and your injuries
 - **Damages**: Quantifiable harm and losses
@@ -166,12 +166,12 @@ Based on similar cases:
       return `# Contract Dispute Analysis 📋
 
 ## Contract Analysis Complete
-I've reviewed your contract dispute using advanced legal reasoning:
+I've reviewed your contract dispute using advanced <span class="text-gray-300">legal</span> reasoning:
 
 ### Essential Contract Elements
 1. **Offer & Acceptance**: Clear terms and mutual agreement
 2. **Consideration**: Exchange of value between parties
-3. **Capacity**: Legal ability to enter contract
+3. **Capacity**: <span class="text-gray-300">Legal</span> ability to enter contract
 4. **Legality**: Lawful purpose and terms
 
 ### Breach Analysis Framework
@@ -211,7 +211,7 @@ Contract cases with similar fact patterns:
 I've generated a comprehensive timeline framework for your case:
 
 ### Critical Timeline Components
-1. **Incident Date**: Primary event triggering legal action
+1. **Incident Date**: Primary event triggering <span class="text-gray-300">legal</span> action
 2. **Notice Periods**: When parties became aware of issues
 3. **Statute of Limitations**: Filing deadlines and time constraints
 4. **Discovery Cutoffs**: Evidence gathering deadlines
@@ -251,19 +251,19 @@ I've generated a comprehensive timeline framework for your case:
     if (message.includes('precedent') || message.includes('similar case') || message.includes('case law') || message.includes('find cases')) {
       return `# Precedent Research Results 📚
 
-## Legal Database Search Complete
+## <span class="text-gray-300">Legal</span> Database Search Complete
 I've searched our comprehensive case database for relevant precedents:
 
 ### Search Methodology
-- **Keyword Analysis**: Legal terms and fact pattern matching
+- **Keyword Analysis**: <span class="text-gray-300">Legal</span> terms and fact pattern matching
 - **Jurisdiction Filtering**: Relevant court systems and levels
 - **Temporal Relevance**: Recent decisions and current law
-- **Similarity Scoring**: AI-powered case comparison algorithms
+- **Similarity Scoring**: <span class="text-gray-300">AI</span>-powered case comparison algorithms
 
 ### Top Precedent Matches
 **Highly Relevant Cases (90%+ similarity):**
 - **Johnson v. MegaCorp Industries** (2023) - $285K verdict
-  - Similar fact pattern, identical legal theory
+  - Similar fact pattern, identical <span class="text-gray-300">legal</span> theory
   - Federal district court, binding precedent
   - Key holding: Temporal proximity establishes causation
 
@@ -286,7 +286,7 @@ I've searched our comprehensive case database for relevant precedents:
 
 ### Strategic Applications
 **Favorable Precedents Support:**
-- Legal theory validation and case strength
+- <span class="text-gray-300">Legal</span> theory validation and case strength
 - Damages calculation benchmarks and ranges
 - Procedural strategy and motion practice
 - Settlement negotiation leverage and positioning
@@ -295,19 +295,19 @@ I've searched our comprehensive case database for relevant precedents:
 - Factual differences and unique circumstances
 - Jurisdictional variations and law changes
 - Procedural distinctions and case posture
-- Temporal factors and legal evolution
+- Temporal factors and <span class="text-gray-300">legal</span> evolution
 
 **Which precedent cases would you like me to analyze in greater detail?**`;
     }
     
     // Default comprehensive response
-    return `# Comprehensive Legal Analysis 🏛️
+    return `# Comprehensive <span class="text-gray-300">Legal</span> Analysis 🏛️
 
-## AI-Powered Case Assessment
+## <span class="text-gray-300">AI</span>-Powered Case Assessment
 I've completed a comprehensive analysis using advanced temporal reasoning and precedent matching:
 
 ### Case Strengths Identified:
-- ✅ **Strong Legal Foundation**: Clear statutory/common law basis
+- ✅ **Strong <span class="text-gray-300">Legal</span> Foundation**: Clear statutory/common law basis
 - ✅ **Compelling Facts**: Well-documented incident patterns  
 - ✅ **Favorable Precedents**: 78% success rate in similar cases
 - ✅ **Temporal Evidence**: Clear causation timeline
@@ -415,7 +415,7 @@ I can now help you with:
 
 ### Document Analysis
 - **Key Information Extraction**: Dates, parties, terms, conditions
-- **Legal Issue Identification**: Claims, defenses, procedural matters
+- **<span class="text-gray-300">Legal</span> Issue Identification**: Claims, defenses, procedural matters
 - **Timeline Integration**: Incorporate document dates into case chronology
 - **Precedent Cross-Reference**: Match document content with similar cases
 
@@ -430,7 +430,7 @@ Would you like me to:
 1. **Extract key information** from the uploaded documents?
 2. **Generate a timeline** incorporating document dates?
 3. **Find precedent cases** similar to your document content?
-4. **Analyze legal issues** identified in the documents?
+4. **Analyze <span class="text-gray-300">legal</span> issues** identified in the documents?
 
 **What aspect would you like me to focus on first?**`,
           timestamp: new Date()
@@ -490,7 +490,7 @@ Would you like me to:
               <Brain className="h-8 w-8 text-black" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">AI Legal Assistant</h1>
+              <h1 className="text-2xl font-bold text-white"><span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Assistant</h1>
               <p className="text-gray-400">Advanced case analysis with intelligent responses</p>
             </div>
           </div>
@@ -512,7 +512,7 @@ Would you like me to:
                     <div className="bg-white p-1.5 rounded-lg">
                       <Brain className="h-4 w-4 text-black" />
                     </div>
-                    <span className="text-sm text-gray-400">AI Assistant</span>
+                    <span className="text-sm text-gray-400"><span className="text-gray-300">AI</span> Assistant</span>
                   </div>
                 )}
                 
@@ -589,12 +589,12 @@ Would you like me to:
                   <div className="bg-white p-1.5 rounded-lg">
                     <Brain className="h-4 w-4 text-black" />
                   </div>
-                  <span className="text-sm text-gray-400">AI Assistant</span>
+                  <span className="text-sm text-gray-400"><span className="text-gray-300">AI</span> Assistant</span>
                 </div>
                 <div className="bg-white/10 border border-white/20 p-6 rounded-2xl">
                   <div className="flex items-center space-x-3">
                     <Loader2 className="h-5 w-5 animate-spin text-white" />
-                    <span className="text-white">Analyzing with AI...</span>
+                    <span className="text-white">Analyzing with <span className="text-gray-300">AI</span>...</span>
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                       <div className="w-2 h-2 bg-white rounded-full animate-pulse delay-100"></div>
@@ -704,7 +704,7 @@ Would you like me to:
             {isLoading ? (
               <div className="flex items-center justify-center space-x-2">
                 <Loader2 className="h-3 w-3 animate-spin" />
-                <span>Processing with AI...</span>
+                <span>Processing with <span className="text-gray-300">AI</span>...</span>
               </div>
             ) : (
               'Press Enter to send, Shift+Enter for new line'

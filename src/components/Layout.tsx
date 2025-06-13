@@ -74,8 +74,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const drawGrid = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw base grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+      // Draw base grid with subtle silver tint
+      ctx.strokeStyle = 'rgba(192, 192, 192, 0.02)';
       ctx.lineWidth = 1;
 
       for (let x = 0; x <= canvas.width; x += gridSize) {
@@ -95,19 +95,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       // Check if cursor is over any element for eclipse effect
       const isOverElement = isOverAnyElement(mouseX, mouseY);
 
-      // Draw interactive grid around cursor with eclipse effect
+      // Draw interactive grid around cursor with eclipse effect and silver tint
       const radius = 150;
       for (let x = 0; x <= canvas.width; x += gridSize) {
         for (let y = 0; y <= canvas.height; y += gridSize) {
           const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
           if (distance < radius) {
-            const baseOpacity = (1 - distance / radius) * 0.3;
+            const baseOpacity = (1 - distance / radius) * 0.25;
             
             // Apply eclipse effect - reduce opacity when over any elements
             const eclipseMultiplier = isOverElement ? 0.1 : 1;
             const opacity = baseOpacity * eclipseMultiplier;
             
-            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+            ctx.strokeStyle = `rgba(192, 192, 192, ${opacity})`;
             ctx.lineWidth = 2;
             ctx.strokeRect(x - gridSize/2, y - gridSize/2, gridSize, gridSize);
             
@@ -166,9 +166,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link to="/" className="flex items-center space-x-3">
               <div>
                 <h1 className="text-xl font-bold text-white">
-                  cas<span className="text-gray-400">(e)</span>cade
+                  cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade
                 </h1>
-                <p className="text-xs text-gray-400 hidden sm:block">AI Legal Intelligence</p>
+                <p className="text-xs text-gray-400 hidden sm:block">
+                  <span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Intelligence
+                </p>
               </div>
             </Link>
 
@@ -251,9 +253,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center space-x-3 mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">
-                    cas<span className="text-gray-400">(e)</span>cade
+                    cas<span className="text-gray-300">(</span><span className="text-gray-400">e</span><span className="text-gray-300">)</span>cade
                   </h3>
-                  <p className="text-sm text-gray-400">AI Legal Intelligence</p>
+                  <p className="text-sm text-gray-400">
+                    <span className="text-gray-300">AI</span> <span className="text-gray-300">Legal</span> Intelligence
+                  </p>
                 </div>
               </div>
               <p className="text-gray-400 max-w-md">

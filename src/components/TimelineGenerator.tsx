@@ -290,7 +290,7 @@ const TimelineGenerator: React.FC = () => {
               <Clock className="h-8 w-8 text-black" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">AI Timeline Generator</h1>
+              <h1 className="text-2xl font-bold text-white"><span className="text-gray-300">AI</span> Timeline Generator</h1>
               <p className="text-gray-400">Transform case descriptions into detailed chronological timelines</p>
             </div>
           </div>
@@ -308,7 +308,7 @@ const TimelineGenerator: React.FC = () => {
                 {/* Text Input */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-300 mb-3">
-                    Case Description or Legal Text
+                    Case Description or <span className="text-gray-300">Legal</span> Text
                   </label>
                   <textarea
                     value={inputText}
@@ -478,7 +478,7 @@ const TimelineGenerator: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">{timelineData.metadata.api_calls_used}</div>
-                  <div className="text-sm text-gray-400">API Calls</div>
+                  <div className="text-sm text-gray-400"><span className="text-gray-300">API</span> Calls</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">{timelineData.metadata.chunks_processed}</div>

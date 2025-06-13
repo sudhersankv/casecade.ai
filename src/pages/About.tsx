@@ -94,8 +94,8 @@ const About: React.FC = () => {
               About cascade.ai
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              We're revolutionizing legal practice by combining cutting-edge artificial intelligence 
-              with deep legal expertise to help lawyers work more efficiently and effectively.
+              We're revolutionizing <span className="text-gray-300">legal</span> practice by combining cutting-edge artificial intelligence 
+              with deep <span className="text-gray-300">legal</span> expertise to help lawyers work more efficiently and effectively.
             </p>
           </div>
         </div>
@@ -111,12 +111,12 @@ const About: React.FC = () => {
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed mb-6">
                 We believe that every lawyer deserves access to the most advanced tools and insights 
-                to serve their clients better. Our mission is to democratize legal intelligence by 
-                making sophisticated AI analysis accessible to law firms of all sizes.
+                to serve their clients better. Our mission is to democratize <span className="text-gray-300">legal</span> intelligence by 
+                making sophisticated <span className="text-gray-300">AI</span> analysis accessible to law firms of all sizes.
               </p>
               <p className="text-lg text-gray-300 leading-relaxed">
                 By combining temporal reasoning, comprehensive case analysis, and intelligent precedent 
-                discovery, we're helping legal professionals save time, improve accuracy, and build 
+                discovery, we're helping <span className="text-gray-300">legal</span> professionals save time, improve accuracy, and build 
                 stronger cases for their clients.
               </p>
             </div>
@@ -134,7 +134,7 @@ const About: React.FC = () => {
                     <Users className="h-8 w-8 text-black" />
                   </div>
                   <div className="text-3xl font-bold text-white mb-2">15K+</div>
-                  <div className="text-gray-400">Legal Professionals</div>
+                  <div className="text-gray-400"><span className="text-gray-300">Legal</span> Professionals</div>
                 </div>
                 <div className="text-center">
                   <div className="bg-white p-4 rounded-2xl w-fit mx-auto mb-4">
@@ -199,7 +199,7 @@ const About: React.FC = () => {
               Meet Our Team
             </h2>
             <p className="text-xl text-gray-400">
-              Legal experts and AI researchers working together
+              <span className="text-gray-300">Legal</span> experts and <span className="text-gray-300">AI</span> researchers working together
             </p>
           </div>
           
@@ -240,7 +240,7 @@ const About: React.FC = () => {
               Our Journey
             </h2>
             <p className="text-xl text-gray-400">
-              Key milestones in our mission to transform legal practice
+              Key milestones in our mission to transform <span className="text-gray-300">legal</span> practice
             </p>
           </div>
           
@@ -272,11 +272,11 @@ const About: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white/5 border border-white/10 rounded-3xl p-12">
             <h2 className="text-4xl font-bold mb-6 text-white">
-              Join Us in Transforming Legal Practice
+              Join Us in Transforming <span className="text-gray-300">Legal</span> Practice
             </h2>
             
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Whether you're a legal professional looking to enhance your practice or a talented 
+              Whether you're a <span className="text-gray-300">legal</span> professional looking to enhance your practice or a talented 
               individual wanting to join our mission, we'd love to hear from you.
             </p>
             

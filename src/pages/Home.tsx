@@ -70,7 +70,7 @@ const Home: React.FC = () => {
             }`}>
               <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 rounded-full px-6 py-3 mb-8">
                 <Sparkles className="h-4 w-4 text-white" />
-                <span className="text-white font-medium">Powered by Advanced AI</span>
+                <span className="text-white font-medium">Powered by Advanced <span className="text-gray-300">AI</span></span>
               </div>
               
               <h1 className="text-5xl sm:text-7xl font-bold mb-6 leading-tight">
@@ -78,12 +78,12 @@ const Home: React.FC = () => {
                   Revolutionary
                 </span>
                 <span className="text-white block mt-2">
-                  Legal AI Assistant
+                  <span className="text-gray-300">Legal</span> <span className="text-gray-300">AI</span> Assistant
                 </span>
               </h1>
               
               <p className="text-xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-                Transform your legal practice with AI-powered case analysis, automated timeline generation, 
+                Transform your <span className="text-gray-300">legal</span> practice with <span className="text-gray-300">AI</span>-powered case analysis, automated timeline generation, 
                 and intelligent precedent discovery. Access 2.3M+ cases with advanced temporal reasoning.
               </p>
               
@@ -118,10 +118,10 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Powerful AI Features
+              Powerful <span className="text-gray-300">AI</span> Features
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Advanced temporal reasoning and comprehensive legal analysis
+              Advanced temporal reasoning and comprehensive <span className="text-gray-300">legal</span> analysis
             </p>
           </div>
           
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Trusted by Legal Professionals
+              Trusted by <span className="text-gray-300">Legal</span> Professionals
             </h2>
           </div>
           
@@ -202,11 +202,11 @@ const Home: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white/5 border border-white/10 rounded-3xl p-12">
             <h2 className="text-4xl font-bold mb-6 text-white">
-              Ready to Transform Your Legal Practice?
+              Ready to Transform Your <span className="text-gray-300">Legal</span> Practice?
             </h2>
             
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of legal professionals who trust cascade.ai for advanced case analysis and research.
+              Join thousands of <span className="text-gray-300">legal</span> professionals who trust cascade.ai for advanced case analysis and research.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">

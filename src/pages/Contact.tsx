@@ -96,7 +96,7 @@ const Contact: React.FC = () => {
               Get in Touch
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Ready to transform your legal practice? We're here to help you get started 
+              Ready to transform your <span className="text-gray-300">legal</span> practice? We're here to help you get started 
               with cascade.ai and answer any questions you might have.
             </p>
           </div>

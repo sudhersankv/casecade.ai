@@ -68,10 +68,10 @@ const Features: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl font-bold mb-6 text-white">
-              Powerful AI Features
+              Powerful <span className="text-gray-300">AI</span> Features
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Advanced temporal reasoning, comprehensive legal analysis, and intelligent case discovery 
+              Advanced temporal reasoning, comprehensive <span className="text-gray-300">legal</span> analysis, and intelligent case discovery 
               powered by cutting-edge artificial intelligence technology.
             </p>
           </div>
@@ -122,10 +122,10 @@ const Features: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Trusted by Legal Professionals
+              Trusted by <span className="text-gray-300">Legal</span> Professionals
             </h2>
             <p className="text-xl text-gray-400">
-              Join thousands of lawyers who rely on our AI-powered platform
+              Join thousands of lawyers who rely on our <span className="text-gray-300">AI</span>-powered platform
             </p>
           </div>
           
@@ -163,11 +163,11 @@ const Features: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white/5 border border-white/10 rounded-3xl p-12">
             <h2 className="text-4xl font-bold mb-6 text-white">
-              Experience the Future of Legal Research
+              Experience the Future of <span className="text-gray-300">Legal</span> Research
             </h2>
             
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              See how our AI-powered features can transform your legal practice and save you hours of research time.
+              See how our <span className="text-gray-300">AI</span>-powered features can transform your <span className="text-gray-300">legal</span> practice and save you hours of research time.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
