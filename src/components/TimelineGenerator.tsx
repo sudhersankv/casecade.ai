@@ -656,7 +656,7 @@ const TimelineGenerator: React.FC = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
                           <span className="text-gray-400">Parties: </span>
-                          <span className="text-gray-300">{event.parties.join(', ')}</span>
+                          <span className="text-gray-300">{event.parties?.join(', ') || 'Unknown parties'}</span>
                         </div>
                         <div>
                           <span className="text-gray-400">Type: </span>
@@ -709,7 +709,7 @@ const TimelineGenerator: React.FC = () => {
                         <div className="space-y-1 text-sm">
                           <div>
                             <span className="text-gray-400">Parties: </span>
-                            <span className="text-gray-300">{event.parties.join(', ')}</span>
+                            <span className="text-gray-300">{event.parties?.join(', ') || 'Unknown parties'}</span>
                           </div>
                           <div>
                             <span className="text-gray-400">Type: </span>
