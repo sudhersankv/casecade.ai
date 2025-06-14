@@ -170,7 +170,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link to="/" className="flex items-center space-x-3">
               <div>
                 <h1 className="text-xl font-bold text-white">
-                  cas<span className="text-silver-400 drop-shadow-sm">(</span><span className="text-silver-300 drop-shadow-lg animate-pulse">e</span><span className="text-silver-400 drop-shadow-sm">)</span>cade.ai
+                  cas<span className="text-silver-300 drop-shadow-lg animate-pulse">e</span>cade.ai
                 </h1>
                 <p className="text-xs text-gray-400 hidden sm:block">
                   <span className="text-silver-300">AI</span> <span className="text-silver-300">Legal</span> Intelligence
@@ -257,7 +257,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center space-x-3 mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">
-                    cas<span className="text-silver-400">(</span><span className="text-silver-300">e</span><span className="text-silver-400">)</span>cade.ai
+                    cas<span className="text-silver-300">e</span>cade.ai
                   </h3>
                   <p className="text-sm text-gray-400">
                     <span className="text-silver-300">AI</span> <span className="text-silver-300">Legal</span> Intelligence
