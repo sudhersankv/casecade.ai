@@ -73,6 +73,7 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
+  const [editingField, setEditingField] = useState<{ eventId: string; field: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const addNewEvent = () => {
@@ -85,10 +86,13 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
       eventType: 'other',
       importance: 'medium',
       parties: [],
-      isEditing: true,
       order: events.length
     };
     setEvents(prev => [...prev, newEvent]);
+    // Auto-start editing the title
+    setTimeout(() => {
+      setEditingField({ eventId: newEvent.id, field: 'title' });
+    }, 100);
   };
 
   const updateEvent = (id: string, updates: Partial<TimelineEvent>) => {
@@ -148,6 +152,23 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
 
     setEvents(newEvents);
     setDraggedEvent(null);
+  };
+
+  const handleDoubleClick = (eventId: string, field: string) => {
+    setEditingField({ eventId, field });
+  };
+
+  const handleFieldBlur = () => {
+    setEditingField(null);
+  };
+
+  const handleFieldKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      setEditingField(null);
+    }
+    if (e.key === 'Escape') {
+      setEditingField(null);
+    }
   };
 
   const generateTimelineWithAI = async () => {
@@ -292,6 +313,66 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
     }
   };
 
+  const EditableField = ({ 
+    value, 
+    onChange, 
+    eventId, 
+    field, 
+    className = "", 
+    multiline = false,
+    placeholder = ""
+  }: {
+    value: string;
+    onChange: (value: string) => void;
+    eventId: string;
+    field: string;
+    className?: string;
+    multiline?: boolean;
+    placeholder?: string;
+  }) => {
+    const isEditing = editingField?.eventId === eventId && editingField?.field === field;
+    
+    if (isEditing) {
+      if (multiline) {
+        return (
+          <textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={handleFieldBlur}
+            onKeyDown={handleFieldKeyDown}
+            className={`bg-white/10 border border-white/20 rounded px-2 py-1 text-white focus:outline-none focus:border-silver-400 resize-none ${className}`}
+            placeholder={placeholder}
+            autoFocus
+            rows={2}
+          />
+        );
+      } else {
+        return (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={handleFieldBlur}
+            onKeyDown={handleFieldKeyDown}
+            className={`bg-white/10 border border-white/20 rounded px-2 py-1 text-white focus:outline-none focus:border-silver-400 ${className}`}
+            placeholder={placeholder}
+            autoFocus
+          />
+        );
+      }
+    }
+
+    return (
+      <span
+        onDoubleClick={() => handleDoubleClick(eventId, field)}
+        className={`cursor-pointer hover:bg-white/5 rounded px-1 transition-colors ${className}`}
+        title="Double-click to edit"
+      >
+        {value || placeholder}
+      </span>
+    );
+  };
+
   const EventCard = ({ event }: { event: TimelineEvent }) => (
     <div
       draggable
@@ -315,130 +396,100 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
 
         {/* Event Content */}
         <div className="flex-1">
-          {event.isEditing ? (
-            <div className="space-y-4">
-              <input
-                type="text"
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-lg font-semibold text-white">
+              <EditableField
                 value={event.title}
-                onChange={(e) => updateEvent(event.id, { title: e.target.value })}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-silver-400"
+                onChange={(value) => updateEvent(event.id, { title: value })}
+                eventId={event.id}
+                field="title"
                 placeholder="Event title"
               />
-              
-              <textarea
-                value={event.description}
-                onChange={(e) => updateEvent(event.id, { description: e.target.value })}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-silver-400 resize-none"
-                rows={3}
-                placeholder="Event description"
-              />
-
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="date"
+            </h4>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-400">
+                <EditableField
                   value={event.date}
-                  onChange={(e) => updateEvent(event.id, { date: e.target.value })}
-                  className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-silver-400"
+                  onChange={(value) => updateEvent(event.id, { date: value })}
+                  eventId={event.id}
+                  field="date"
+                  placeholder="YYYY-MM-DD"
                 />
-                
-                <select
-                  value={event.importance}
-                  onChange={(e) => updateEvent(event.id, { importance: e.target.value as TimelineEvent['importance'] })}
-                  className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-silver-400"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="critical">Critical</option>
-                </select>
-              </div>
-
-              <input
-                type="text"
-                value={event.parties.join(', ')}
-                onChange={(e) => updateEvent(event.id, { parties: e.target.value.split(', ').filter(p => p.trim()) })}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-silver-400"
-                placeholder="Parties involved (comma separated)"
-              />
-
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => updateEvent(event.id, { isEditing: false })}
-                  className="flex items-center space-x-2 px-4 py-2 bg-green-500/20 text-green-300 rounded-xl hover:bg-green-500/30 transition-colors"
-                >
-                  <Save className="h-4 w-4" />
-                  <span>Save</span>
-                </button>
-                <button
-                  onClick={() => deleteEvent(event.id)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 text-red-300 rounded-xl hover:bg-red-500/30 transition-colors"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span>Delete</span>
-                </button>
-              </div>
+              </span>
+              <select
+                value={event.importance}
+                onChange={(e) => updateEvent(event.id, { importance: e.target.value as TimelineEvent['importance'] })}
+                className={`px-2 py-1 rounded-full text-xs font-medium border ${getImportanceColor(event.importance)} bg-transparent`}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
             </div>
-          ) : (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-lg font-semibold text-white">{event.title}</h4>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-400">{new Date(event.date).toLocaleDateString()}</span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getImportanceColor(event.importance)}`}>
-                    {event.importance}
-                  </span>
-                </div>
-              </div>
-              
-              <p className="text-gray-400 mb-3">{event.description}</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span className="flex items-center space-x-1">
-                    <Users className="h-3 w-3" />
-                    <span>{event.parties.join(', ')}</span>
-                  </span>
-                  {event.location && (
-                    <span className="flex items-center space-x-1">
-                      <MapPin className="h-3 w-3" />
-                      <span>{event.location}</span>
-                    </span>
-                  )}
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => moveEvent(event.id, 'up')}
-                    className="p-1 text-gray-400 hover:text-white transition-colors"
-                    title="Move up"
-                  >
-                    <ArrowUp className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => moveEvent(event.id, 'down')}
-                    className="p-1 text-gray-400 hover:text-white transition-colors"
-                    title="Move down"
-                  >
-                    <ArrowDown className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => updateEvent(event.id, { isEditing: true })}
-                    className="p-1 text-gray-400 hover:text-white transition-colors"
-                    title="Edit"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => deleteEvent(event.id)}
-                    className="p-1 text-gray-400 hover:text-red-400 transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
+          </div>
+          
+          <p className="text-gray-400 mb-3">
+            <EditableField
+              value={event.description}
+              onChange={(value) => updateEvent(event.id, { description: value })}
+              eventId={event.id}
+              field="description"
+              multiline={true}
+              placeholder="Event description"
+            />
+          </p>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <span className="flex items-center space-x-1">
+                <Users className="h-3 w-3" />
+                <EditableField
+                  value={event.parties.join(', ')}
+                  onChange={(value) => updateEvent(event.id, { parties: value.split(', ').filter(p => p.trim()) })}
+                  eventId={event.id}
+                  field="parties"
+                  placeholder="Parties involved"
+                />
+              </span>
+              {event.location && (
+                <span className="flex items-center space-x-1">
+                  <MapPin className="h-3 w-3" />
+                  <EditableField
+                    value={event.location}
+                    onChange={(value) => updateEvent(event.id, { location: value })}
+                    eventId={event.id}
+                    field="location"
+                    placeholder="Location"
+                  />
+                </span>
+              )}
             </div>
-          )}
+            
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => moveEvent(event.id, 'up')}
+                className="p-1 text-gray-400 hover:text-white transition-colors"
+                title="Move up"
+              >
+                <ArrowUp className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => moveEvent(event.id, 'down')}
+                className="p-1 text-gray-400 hover:text-white transition-colors"
+                title="Move down"
+              >
+                <ArrowDown className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => deleteEvent(event.id)}
+                className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                title="Delete"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -455,7 +506,7 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Timeline Editor</h2>
-              <p className="text-gray-400">Create and edit case timeline events</p>
+              <p className="text-gray-400">Double-click any text to edit • Drag to reorder events</p>
             </div>
           </div>
           

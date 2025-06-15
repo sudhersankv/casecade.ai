@@ -62,6 +62,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const [draggedCase, setDraggedCase] = useState<Case | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'grid' | 'board'>('grid');
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     // Load sample cases with board positions
@@ -172,7 +173,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
 
   const togglePin = (caseId: string) => {
     setCases(prev => prev.map(case_ => 
-      case_.id === caseId ? { ...case_, isPinned: !case_.isPinned } : case_
+      case_.id === caseId ? { ...case_, isPinned: !case_.isPinned, updatedAt: new Date().toISOString().split('T')[0] } : case_
     ));
   };
 
@@ -198,30 +199,43 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   };
 
   const handleDragStart = (e: React.DragEvent, case_: Case) => {
+    if (viewMode !== 'board') return;
+    
     setDraggedCase(case_);
+    setIsDragging(true);
+    
     const rect = e.currentTarget.getBoundingClientRect();
     setDragOffset({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top
     });
+    
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', ''); // Required for Firefox
+  };
+
+  const handleDragEnd = () => {
+    setDraggedCase(null);
+    setIsDragging(false);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
+    if (viewMode !== 'board' || !draggedCase) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    if (!draggedCase) return;
+    if (!draggedCase || viewMode !== 'board') return;
 
     const container = e.currentTarget.getBoundingClientRect();
     const newPosition = {
-      x: Math.max(0, e.clientX - container.left - dragOffset.x),
-      y: Math.max(0, e.clientY - container.top - dragOffset.y)
+      x: Math.max(0, Math.min(container.width - 320, e.clientX - container.left - dragOffset.x)),
+      y: Math.max(0, Math.min(container.height - 200, e.clientY - container.top - dragOffset.y))
     };
 
+    // Update case position immediately for smooth UX
     setCases(prev => prev.map(case_ => 
       case_.id === draggedCase.id 
         ? { ...case_, position: newPosition, updatedAt: new Date().toISOString().split('T')[0] }
@@ -229,6 +243,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     ));
 
     setDraggedCase(null);
+    setIsDragging(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -265,19 +280,27 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     <div
       draggable={isBoard}
       onDragStart={(e) => isBoard && handleDragStart(e, case_)}
+      onDragEnd={handleDragEnd}
       className={`bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 cursor-pointer group ${
         isBoard ? 'absolute w-80 select-none' : ''
-      } ${draggedCase?.id === case_.id ? 'opacity-50' : ''}`}
+      } ${draggedCase?.id === case_.id ? 'opacity-50 scale-105 z-50' : ''} ${
+        isDragging && draggedCase?.id !== case_.id ? 'pointer-events-none' : ''
+      }`}
       style={isBoard ? { 
         left: case_.position.x, 
         top: case_.position.y,
-        zIndex: draggedCase?.id === case_.id ? 1000 : 1
+        zIndex: draggedCase?.id === case_.id ? 1000 : 1,
+        transform: draggedCase?.id === case_.id ? 'rotate(2deg)' : 'none'
       } : {}}
-      onClick={() => !draggedCase && setSelectedCase(case_)}
+      onClick={(e) => {
+        if (!isDragging && !draggedCase) {
+          setSelectedCase(case_);
+        }
+      }}
     >
       {/* Drag Handle for Board View */}
       {isBoard && (
-        <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
           <GripVertical className="h-4 w-4 text-gray-400" />
         </div>
       )}
@@ -310,10 +333,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
           
           {/* Priority Selector */}
           <div className="relative group">
-            <button className="p-1 text-gray-400 hover:text-white transition-colors">
+            <button 
+              onClick={(e) => e.stopPropagation()}
+              className="p-1 text-gray-400 hover:text-white transition-colors"
+            >
               <Flag className="h-4 w-4" />
             </button>
-            <div className="absolute right-0 top-8 bg-black/90 border border-white/20 rounded-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <div className="absolute right-0 top-8 bg-black/90 border border-white/20 rounded-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none group-hover:pointer-events-auto">
               {['low', 'medium', 'high', 'critical'].map((priority) => (
                 <button
                   key={priority}
@@ -592,8 +618,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
             onDrop={handleDrop}
           >
             <div className="absolute inset-0 p-4">
-              <div className="text-sm text-gray-400 mb-4">
-                Drag cases to reposition them on the board
+              <div className="text-sm text-gray-400 mb-4 flex items-center space-x-2">
+                <GripVertical className="h-4 w-4" />
+                <span>Drag cases to reposition them on the board</span>
               </div>
               {filteredCases.map((case_) => (
                 <CaseCard key={case_.id} case_={case_} isBoard={true} />
