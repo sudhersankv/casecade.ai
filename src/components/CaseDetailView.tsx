@@ -20,8 +20,10 @@ import {
   CheckCircle,
   Star,
   Brain,
-  Zap
+  Zap,
+  Timeline
 } from 'lucide-react';
+import TimelineEditor from './TimelineEditor';
 
 interface CaseDetailViewProps {
   case_: any;
@@ -31,6 +33,7 @@ interface CaseDetailViewProps {
 
 const CaseDetailView: React.FC<CaseDetailViewProps> = ({ case_, onBack, onUpdate }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showTimelineEditor, setShowTimelineEditor] = useState(false);
   const [documents, setDocuments] = useState([
     {
       id: '1',
@@ -113,6 +116,26 @@ const CaseDetailView: React.FC<CaseDetailViewProps> = ({ case_, onBack, onUpdate
     }
   };
 
+  const handleTimelineSave = (events: any[]) => {
+    setTimeline(events.map(event => ({
+      id: event.id,
+      date: event.date,
+      event: event.title,
+      description: event.description,
+      type: event.eventType,
+      importance: event.importance
+    })));
+    setShowTimelineEditor(false);
+    
+    // Update case with new timeline count
+    const updatedCase = { 
+      ...case_, 
+      timelineEvents: events.length,
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+    onUpdate(updatedCase);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-500/20 text-green-300 border-green-500/30';
@@ -159,6 +182,27 @@ const CaseDetailView: React.FC<CaseDetailViewProps> = ({ case_, onBack, onUpdate
     { id: 'analysis', label: 'AI Analysis', icon: Brain },
     { id: 'precedents', label: 'Similar Cases', icon: Search }
   ];
+
+  if (showTimelineEditor) {
+    return (
+      <TimelineEditor
+        caseId={case_.id}
+        initialEvents={timeline.map(event => ({
+          id: event.id,
+          date: event.date,
+          title: event.event,
+          description: event.description,
+          type: 'explicit' as const,
+          eventType: event.type,
+          importance: event.importance as any,
+          parties: [],
+          order: 0
+        }))}
+        onSave={handleTimelineSave}
+        onClose={() => setShowTimelineEditor(false)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -304,11 +348,11 @@ const CaseDetailView: React.FC<CaseDetailViewProps> = ({ case_, onBack, onUpdate
                   </button>
                   
                   <button
-                    onClick={() => setActiveTab('timeline')}
+                    onClick={() => setShowTimelineEditor(true)}
                     className="flex flex-col items-center space-y-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-all duration-300"
                   >
-                    <Zap className="h-6 w-6 text-yellow-400" />
-                    <span className="text-sm font-medium text-white">Generate Timeline</span>
+                    <Timeline className="h-6 w-6 text-yellow-400" />
+                    <span className="text-sm font-medium text-white">Edit Timeline</span>
                   </button>
                   
                   <button
@@ -362,7 +406,7 @@ const CaseDetailView: React.FC<CaseDetailViewProps> = ({ case_, onBack, onUpdate
                   </div>
                   <div className="flex items-center space-x-3 text-sm">
                     <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    <span className="text-gray-300">Timeline generated</span>
+                    <span className="text-gray-300">Timeline updated</span>
                     <span className="text-gray-500">1 day ago</span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm">
@@ -451,39 +495,62 @@ const CaseDetailView: React.FC<CaseDetailViewProps> = ({ case_, onBack, onUpdate
             {/* Timeline Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">Case Timeline</h2>
-              <button className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-xl font-bold hover:from-silver-300 hover:to-silver-200 transition-all duration-300">
-                <Zap className="h-5 w-5" />
-                <span>Generate Timeline</span>
-              </button>
+              <div className="flex space-x-4">
+                <button 
+                  onClick={() => setShowTimelineEditor(true)}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-xl font-bold hover:from-silver-300 hover:to-silver-200 transition-all duration-300"
+                >
+                  <Edit className="h-5 w-5" />
+                  <span>Edit Timeline</span>
+                </button>
+                <button className="flex items-center space-x-2 px-6 py-3 bg-purple-500/20 text-purple-300 rounded-xl hover:bg-purple-500/30 transition-colors">
+                  <Zap className="h-5 w-5" />
+                  <span>AI Generate</span>
+                </button>
+              </div>
             </div>
 
             {/* Timeline */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <div className="space-y-6">
-                {timeline.map((event, index) => (
-                  <div key={event.id} className="flex items-start space-x-6">
-                    <div className="flex-shrink-0">
-                      <div className={`p-3 rounded-xl border-2 ${getImportanceColor(event.importance)}`}>
-                        {getEventIcon(event.type)}
+              {timeline.length > 0 ? (
+                <div className="space-y-6">
+                  {timeline.map((event, index) => (
+                    <div key={event.id} className="flex items-start space-x-6">
+                      <div className="flex-shrink-0">
+                        <div className={`p-3 rounded-xl border-2 ${getImportanceColor(event.importance)}`}>
+                          {getEventIcon(event.type)}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-4 mb-2">
+                          <h4 className="text-lg font-semibold text-white">{event.event}</h4>
+                          <span className="text-sm text-gray-400">{new Date(event.date).toLocaleDateString()}</span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            event.importance === 'critical' ? 'bg-red-500/20 text-red-300' :
+                            event.importance === 'high' ? 'bg-yellow-500/20 text-yellow-300' :
+                            'bg-blue-500/20 text-blue-300'
+                          }`}>
+                            {event.importance}
+                          </span>
+                        </div>
+                        <p className="text-gray-400">{event.description}</p>
                       </div>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-4 mb-2">
-                        <h4 className="text-lg font-semibold text-white">{event.event}</h4>
-                        <span className="text-sm text-gray-400">{new Date(event.date).toLocaleDateString()}</span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          event.importance === 'critical' ? 'bg-red-500/20 text-red-300' :
-                          event.importance === 'high' ? 'bg-yellow-500/20 text-yellow-300' :
-                          'bg-blue-500/20 text-blue-300'
-                        }`}>
-                          {event.importance}
-                        </span>
-                      </div>
-                      <p className="text-gray-400">{event.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">No Timeline Created</h3>
+                  <p className="text-gray-400 mb-6">Create a timeline to track important case events and dates</p>
+                  <button 
+                    onClick={() => setShowTimelineEditor(true)}
+                    className="px-6 py-3 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-xl font-bold hover:from-silver-300 hover:to-silver-200 transition-all duration-300"
+                  >
+                    Create Timeline
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
