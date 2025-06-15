@@ -6,9 +6,10 @@ import SilverFireflies from './SilverFireflies';
 
 interface LayoutProps {
   children: React.ReactNode;
+  onOpenAuth: (mode: 'login' | 'signup') => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, onOpenAuth }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -197,10 +198,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="px-4 py-2 text-white border border-silver-400/30 rounded-lg hover:bg-silver-500/10 hover:border-silver-300/50 transition-all duration-300 hover:shadow-lg hover:shadow-silver-500/20">
+              <button 
+                onClick={() => onOpenAuth('login')}
+                className="px-4 py-2 text-white border border-silver-400/30 rounded-lg hover:bg-silver-500/10 hover:border-silver-300/50 transition-all duration-300 hover:shadow-lg hover:shadow-silver-500/20"
+              >
                 Login
               </button>
-              <button className="px-4 py-2 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-lg font-medium hover:from-silver-300 hover:to-silver-200 transition-all duration-300 hover:shadow-lg hover:shadow-silver-400/30 transform hover:scale-105">
+              <button 
+                onClick={() => onOpenAuth('signup')}
+                className="px-4 py-2 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-lg font-medium hover:from-silver-300 hover:to-silver-200 transition-all duration-300 hover:shadow-lg hover:shadow-silver-400/30 transform hover:scale-105"
+              >
                 Sign Up
               </button>
             </div>
@@ -232,10 +239,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Link>
               ))}
               <div className="pt-4 space-y-2">
-                <button className="w-full px-4 py-2 text-white border border-silver-400/30 rounded-lg hover:bg-silver-500/10">
+                <button 
+                  onClick={() => {
+                    onOpenAuth('login');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-white border border-silver-400/30 rounded-lg hover:bg-silver-500/10"
+                >
                   Login
                 </button>
-                <button className="w-full px-4 py-2 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-lg font-medium">
+                <button 
+                  onClick={() => {
+                    onOpenAuth('signup');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 bg-gradient-to-r from-silver-400 to-silver-300 text-black rounded-lg font-medium"
+                >
                   Sign Up
                 </button>
               </div>
