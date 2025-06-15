@@ -1,28 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  ArrowLeft, 
-  Upload, 
-  FileText, 
-  Calendar, 
-  Search, 
-  BarChart3, 
-  Pin, 
-  PinOff,
-  Edit,
-  Trash2,
-  Download,
-  Eye,
-  Plus,
-  Clock,
-  Users,
-  Scale,
-  AlertCircle,
-  CheckCircle,
-  Star,
-  Brain,
-  Zap,
-  Timeline
-} from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Calendar, Search, BarChart3, Pin, PinOff, Edit, Trash2, Download, Eye, Plus, Clock, Users, Scale, AlertCircle, CheckCircle, Star, Brain, Zap, Baseline as Timeline } from 'lucide-react';
 import TimelineEditor from './TimelineEditor';
 
 interface CaseDetailViewProps {
