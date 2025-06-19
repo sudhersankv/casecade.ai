@@ -14,7 +14,6 @@ import {
   Loader2,
   Download,
   Upload,
-  GripVertical,
   AlertCircle,
   CheckCircle,
   Star,
@@ -69,7 +68,6 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
         ]
   );
   
-  const [draggedEvent, setDraggedEvent] = useState<TimelineEvent | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
@@ -122,36 +120,6 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
       
       setEvents(newEvents);
     }
-  };
-
-  const handleDragStart = (e: React.DragEvent, event: TimelineEvent) => {
-    setDraggedEvent(event);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent, targetEvent: TimelineEvent) => {
-    e.preventDefault();
-    if (!draggedEvent || draggedEvent.id === targetEvent.id) return;
-
-    const draggedIndex = events.findIndex(e => e.id === draggedEvent.id);
-    const targetIndex = events.findIndex(e => e.id === targetEvent.id);
-
-    const newEvents = [...events];
-    newEvents.splice(draggedIndex, 1);
-    newEvents.splice(targetIndex, 0, draggedEvent);
-
-    // Update order numbers
-    newEvents.forEach((event, index) => {
-      event.order = index;
-    });
-
-    setEvents(newEvents);
-    setDraggedEvent(null);
   };
 
   const handleDoubleClick = (eventId: string, field: string) => {
@@ -374,21 +342,8 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
   };
 
   const EventCard = ({ event }: { event: TimelineEvent }) => (
-    <div
-      draggable
-      onDragStart={(e) => handleDragStart(e, event)}
-      onDragOver={handleDragOver}
-      onDrop={(e) => handleDrop(e, event)}
-      className={`bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 group ${
-        draggedEvent?.id === event.id ? 'opacity-50' : ''
-      }`}
-    >
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 group">
       <div className="flex items-start space-x-4">
-        {/* Drag Handle */}
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity cursor-move">
-          <GripVertical className="h-5 w-5 text-gray-400" />
-        </div>
-
         {/* Event Icon */}
         <div className={`p-3 rounded-xl border-2 ${getImportanceColor(event.importance)} flex-shrink-0`}>
           {getEventIcon(event.eventType)}
@@ -419,12 +374,12 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
               <select
                 value={event.importance}
                 onChange={(e) => updateEvent(event.id, { importance: e.target.value as TimelineEvent['importance'] })}
-                className={`px-2 py-1 rounded-full text-xs font-medium border ${getImportanceColor(event.importance)} bg-transparent`}
+                className={`px-2 py-1 rounded-full text-xs font-medium border ${getImportanceColor(event.importance)} bg-black`}
               >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="critical">Critical</option>
+                <option value="low" className="bg-black text-white">Low</option>
+                <option value="medium" className="bg-black text-white">Medium</option>
+                <option value="high" className="bg-black text-white">High</option>
+                <option value="critical" className="bg-black text-white">Critical</option>
               </select>
             </div>
           </div>
@@ -506,7 +461,7 @@ const TimelineEditor: React.FC<TimelineEditorProps> = ({
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Timeline Editor</h2>
-              <p className="text-gray-400">Double-click any text to edit • Drag to reorder events</p>
+              <p className="text-gray-400">Double-click any text to edit • Use buttons to reorder events</p>
             </div>
           </div>
           

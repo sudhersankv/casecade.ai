@@ -21,7 +21,6 @@ import {
   BarChart3,
   Scale,
   LogOut,
-  GripVertical,
   Flag
 } from 'lucide-react';
 import CaseDetailView from './CaseDetailView';
@@ -42,8 +41,6 @@ interface Case {
   nextDeadline?: string;
   client?: string;
   jurisdiction?: string;
-  position: { x: number; y: number };
-  boardPosition: number;
 }
 
 interface DashboardProps {
@@ -59,13 +56,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('updated');
-  const [draggedCase, setDraggedCase] = useState<Case | null>(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [viewMode, setViewMode] = useState<'grid' | 'board'>('grid');
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    // Load sample cases with board positions
+    // Load sample cases
     const sampleCases: Case[] = [
       {
         id: '1',
@@ -81,9 +74,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         timelineEvents: 8,
         nextDeadline: '2024-02-15',
         client: 'John Smith',
-        jurisdiction: 'California',
-        position: { x: 50, y: 50 },
-        boardPosition: 0
+        jurisdiction: 'California'
       },
       {
         id: '2',
@@ -99,9 +90,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         timelineEvents: 15,
         nextDeadline: '2024-02-01',
         client: 'ABC Corporation',
-        jurisdiction: 'New York',
-        position: { x: 350, y: 50 },
-        boardPosition: 1
+        jurisdiction: 'New York'
       },
       {
         id: '3',
@@ -116,9 +105,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         documentsCount: 8,
         timelineEvents: 6,
         client: 'Maria Rodriguez',
-        jurisdiction: 'Texas',
-        position: { x: 650, y: 50 },
-        boardPosition: 2
+        jurisdiction: 'Texas'
       },
       {
         id: '4',
@@ -133,9 +120,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         documentsCount: 18,
         timelineEvents: 22,
         client: 'TechStart Inc.',
-        jurisdiction: 'Federal',
-        position: { x: 50, y: 300 },
-        boardPosition: 3
+        jurisdiction: 'Federal'
       }
     ];
     setCases(sampleCases);
@@ -183,67 +168,17 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     ));
   };
 
-  const handleCreateCase = (newCase: Omit<Case, 'id' | 'createdAt' | 'updatedAt' | 'documentsCount' | 'timelineEvents' | 'position' | 'boardPosition'>) => {
+  const handleCreateCase = (newCase: Omit<Case, 'id' | 'createdAt' | 'updatedAt' | 'documentsCount' | 'timelineEvents'>) => {
     const case_: Case = {
       ...newCase,
       id: Math.random().toString(36).substr(2, 9),
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
       documentsCount: 0,
-      timelineEvents: 0,
-      position: { x: 50 + (cases.length % 4) * 300, y: 50 + Math.floor(cases.length / 4) * 250 },
-      boardPosition: cases.length
+      timelineEvents: 0
     };
     setCases(prev => [case_, ...prev]);
     setShowCreateModal(false);
-  };
-
-  const handleDragStart = (e: React.DragEvent, case_: Case) => {
-    if (viewMode !== 'board') return;
-    
-    setDraggedCase(case_);
-    setIsDragging(true);
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-    
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', ''); // Required for Firefox
-  };
-
-  const handleDragEnd = () => {
-    setDraggedCase(null);
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    if (viewMode !== 'board' || !draggedCase) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (!draggedCase || viewMode !== 'board') return;
-
-    const container = e.currentTarget.getBoundingClientRect();
-    const newPosition = {
-      x: Math.max(0, Math.min(container.width - 320, e.clientX - container.left - dragOffset.x)),
-      y: Math.max(0, Math.min(container.height - 200, e.clientY - container.top - dragOffset.y))
-    };
-
-    // Update case position immediately for smooth UX
-    setCases(prev => prev.map(case_ => 
-      case_.id === draggedCase.id 
-        ? { ...case_, position: newPosition, updatedAt: new Date().toISOString().split('T')[0] }
-        : case_
-    ));
-
-    setDraggedCase(null);
-    setIsDragging(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -276,35 +211,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     }
   };
 
-  const CaseCard = ({ case_, isBoard = false }: { case_: Case; isBoard?: boolean }) => (
+  const CaseCard = ({ case_ }: { case_: Case }) => (
     <div
-      draggable={isBoard}
-      onDragStart={(e) => isBoard && handleDragStart(e, case_)}
-      onDragEnd={handleDragEnd}
-      className={`bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 cursor-pointer group ${
-        isBoard ? 'absolute w-80 select-none' : ''
-      } ${draggedCase?.id === case_.id ? 'opacity-50 scale-105 z-50' : ''} ${
-        isDragging && draggedCase?.id !== case_.id ? 'pointer-events-none' : ''
-      }`}
-      style={isBoard ? { 
-        left: case_.position.x, 
-        top: case_.position.y,
-        zIndex: draggedCase?.id === case_.id ? 1000 : 1,
-        transform: draggedCase?.id === case_.id ? 'rotate(2deg)' : 'none'
-      } : {}}
-      onClick={(e) => {
-        if (!isDragging && !draggedCase) {
-          setSelectedCase(case_);
-        }
-      }}
+      className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 cursor-pointer group"
+      onClick={() => setSelectedCase(case_)}
     >
-      {/* Drag Handle for Board View */}
-      {isBoard && (
-        <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
-          <GripVertical className="h-4 w-4 text-gray-400" />
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-2">
@@ -339,7 +250,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
             >
               <Flag className="h-4 w-4" />
             </button>
-            <div className="absolute right-0 top-8 bg-black/90 border border-white/20 rounded-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none group-hover:pointer-events-auto">
+            <div className="absolute right-0 top-8 bg-black border border-white/20 rounded-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none group-hover:pointer-events-auto">
               {['low', 'medium', 'high', 'critical'].map((priority) => (
                 <button
                   key={priority}
@@ -348,7 +259,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                     updateCasePriority(case_.id, priority as Case['priority']);
                   }}
                   className={`block w-full text-left px-3 py-1 rounded text-xs hover:bg-white/10 transition-colors ${
-                    case_.priority === priority ? 'text-silver-300' : 'text-gray-400'
+                    case_.priority === priority ? 'text-silver-300 bg-white/10' : 'text-white'
                   }`}
                 >
                   {priority.charAt(0).toUpperCase() + priority.slice(1)}
@@ -441,9 +352,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
       <header className="bg-black/90 border-b border-white/10 p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">
-              cas<span className="text-silver-300">e</span>cade.ai Dashboard
-            </h1>
+            <h1 className="text-2xl font-bold text-white">Legal Dashboard</h1>
             <p className="text-gray-400">Welcome back, {user.name}</p>
           </div>
           
@@ -544,90 +453,50 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
             </div>
             
             <div className="flex items-center space-x-4">
-              {/* View Mode Toggle */}
-              <div className="flex bg-white/10 rounded-xl p-1">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    viewMode === 'grid' ? 'bg-white text-black' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Grid
-                </button>
-                <button
-                  onClick={() => setViewMode('board')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    viewMode === 'board' ? 'bg-white text-black' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Board
-                </button>
-              </div>
-
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400"
+                className="bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400"
               >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="closed">Closed</option>
-                <option value="on_hold">On Hold</option>
+                <option value="all" className="bg-black text-white">All Status</option>
+                <option value="active" className="bg-black text-white">Active</option>
+                <option value="pending" className="bg-black text-white">Pending</option>
+                <option value="closed" className="bg-black text-white">Closed</option>
+                <option value="on_hold" className="bg-black text-white">On Hold</option>
               </select>
               
               <select
                 value={filterPriority}
                 onChange={(e) => setFilterPriority(e.target.value)}
-                className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400"
+                className="bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400"
               >
-                <option value="all">All Priority</option>
-                <option value="critical">Critical</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="all" className="bg-black text-white">All Priority</option>
+                <option value="critical" className="bg-black text-white">Critical</option>
+                <option value="high" className="bg-black text-white">High</option>
+                <option value="medium" className="bg-black text-white">Medium</option>
+                <option value="low" className="bg-black text-white">Low</option>
               </select>
               
-              {viewMode === 'grid' && (
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400"
-                >
-                  <option value="updated">Last Updated</option>
-                  <option value="created">Date Created</option>
-                  <option value="priority">Priority</option>
-                  <option value="title">Title</option>
-                </select>
-              )}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400"
+              >
+                <option value="updated" className="bg-black text-white">Last Updated</option>
+                <option value="created" className="bg-black text-white">Date Created</option>
+                <option value="priority" className="bg-black text-white">Priority</option>
+                <option value="title" className="bg-black text-white">Title</option>
+              </select>
             </div>
           </div>
         </div>
 
-        {/* Cases Display */}
-        {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {sortedCases.map((case_) => (
-              <CaseCard key={case_.id} case_={case_} />
-            ))}
-          </div>
-        ) : (
-          <div 
-            className="relative bg-white/5 border border-white/10 rounded-2xl min-h-[600px] overflow-hidden"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
-            <div className="absolute inset-0 p-4">
-              <div className="text-sm text-gray-400 mb-4 flex items-center space-x-2">
-                <GripVertical className="h-4 w-4" />
-                <span>Drag cases to reposition them on the board</span>
-              </div>
-              {filteredCases.map((case_) => (
-                <CaseCard key={case_.id} case_={case_} isBoard={true} />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Cases Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {sortedCases.map((case_) => (
+            <CaseCard key={case_.id} case_={case_} />
+          ))}
+        </div>
 
         {sortedCases.length === 0 && (
           <div className="text-center py-12">
