@@ -160,7 +160,7 @@ verify_jwt = true
 # Function-specific configurations
 [functions.generate-timeline]
 # Specify the entrypoint file for the generate-timeline function
-entrypoint = "foo.ts"
+entrypoint = "index.ts"
 
 [functions.analyze-case]
 entrypoint = "index.ts"
