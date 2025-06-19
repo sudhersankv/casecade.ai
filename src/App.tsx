@@ -6,7 +6,6 @@ import Demo from './pages/Demo';
 import Features from './pages/Features';
 import Examples from './pages/Examples';
 import About from './pages/About';
-import Contact from './pages/Contact';
 import AuthModal from './components/AuthModal';
 import Dashboard from './components/Dashboard';
 
@@ -43,7 +42,6 @@ function App() {
           <Route path="/features" element={<Features />} />
           <Route path="/examples" element={<Examples />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
         </Routes>
       </Layout>
 

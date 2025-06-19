@@ -144,11 +144,11 @@ const CreateCaseModal: React.FC<CreateCaseModalProps> = ({ isOpen, onClose, onCr
                   value={formData.caseType}
                   onChange={handleInputChange}
                   required
-                  className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
+                  className="w-full bg-black border border-white/20 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
                 >
-                  <option value="">Select case type</option>
+                  <option value="" className="bg-black text-white">Select case type</option>
                   {caseTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
+                    <option key={type} value={type} className="bg-black text-white">{type}</option>
                   ))}
                 </select>
               </div>
@@ -181,11 +181,11 @@ const CreateCaseModal: React.FC<CreateCaseModalProps> = ({ isOpen, onClose, onCr
                   name="jurisdiction"
                   value={formData.jurisdiction}
                   onChange={handleInputChange}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
+                  className="w-full bg-black border border-white/20 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
                 >
-                  <option value="">Select jurisdiction</option>
+                  <option value="" className="bg-black text-white">Select jurisdiction</option>
                   {jurisdictions.map(jurisdiction => (
-                    <option key={jurisdiction} value={jurisdiction}>{jurisdiction}</option>
+                    <option key={jurisdiction} value={jurisdiction} className="bg-black text-white">{jurisdiction}</option>
                   ))}
                 </select>
               </div>
@@ -199,12 +199,12 @@ const CreateCaseModal: React.FC<CreateCaseModalProps> = ({ isOpen, onClose, onCr
                 name="priority"
                 value={formData.priority}
                 onChange={handleInputChange}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
+                className="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
               >
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
-                <option value="critical">Critical Priority</option>
+                <option value="low" className="bg-black text-white">Low Priority</option>
+                <option value="medium" className="bg-black text-white">Medium Priority</option>
+                <option value="high" className="bg-black text-white">High Priority</option>
+                <option value="critical" className="bg-black text-white">Critical Priority</option>
               </select>
             </div>
 
@@ -216,11 +216,11 @@ const CreateCaseModal: React.FC<CreateCaseModalProps> = ({ isOpen, onClose, onCr
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
+                className="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-silver-400 transition-colors"
               >
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="on_hold">On Hold</option>
+                <option value="active" className="bg-black text-white">Active</option>
+                <option value="pending" className="bg-black text-white">Pending</option>
+                <option value="on_hold" className="bg-black text-white">On Hold</option>
               </select>
             </div>
 
